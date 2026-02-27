@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>易經 — I Ching</title>
+<meta name="application-name" content="I Ching 易經">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="易經">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f5f0e8">
+<meta name="description" content="Oracolo I Ching secondo la traduzione di Richard Wilhelm">
+<link id="pwa-manifest" rel="manifest">
+<link id="apple-icon" rel="apple-touch-icon">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+SC:wght@300;400&display=swap');
+:root {
+  --ink:#1a1410; --paper:#f5f0e8; --gold:#b8860b; --gold-l:#d4a017;
+  --rust:#8b4513; --muted:#7a6e60; --border:#c4b89a; --accent:#c8a96e;
+  --yang-col:#1a1410; --yin-col:#8b4513; --mobile-col:#b8860b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'EB Garamond',Georgia,serif;background:var(--paper);color:var(--ink);min-height:100vh;
+  background-image:radial-gradient(ellipse at 20% 15%,rgba(184,134,11,.07) 0%,transparent 55%),
+  radial-gradient(ellipse at 80% 85%,rgba(139,69,19,.05) 0%,transparent 55%);}
+body::before{content:'';position:fixed;inset:0;opacity:.03;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");}
+.wrap{max-width:740px;margin:0 auto;padding:36px 20px 80px;position:relative;z-index:1;}
+/* HEADER */
+header{text-align:center;padding:44px 0 36px;border-bottom:1px solid var(--border);margin-bottom:36px;}
+.h-zh{font-family:'Noto Serif SC',serif;font-size:54px;letter-spacing:14px;color:var(--gold);line-height:1;margin-bottom:6px;}
+.h-title{font-size:12px;letter-spacing:6px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.h-sub{font-style:italic;color:var(--muted);font-size:15px;}
+/* BUTTONS */
+.btn{padding:10px 22px;border:1px solid var(--border);background:transparent;color:var(--ink);
+  font-family:'EB Garamond',serif;font-size:15px;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+.btn:hover,.btn.active{background:var(--gold);color:#fff;border-color:var(--gold);}
+.btn-primary{background:var(--ink);color:var(--paper);border-color:var(--ink);padding:12px 32px;}
+.btn-primary:hover{background:var(--gold);border-color:var(--gold);}
+.btn-sm{font-size:13px;padding:7px 16px;}
+.btn:disabled{opacity:.35;cursor:default;pointer-events:none;}
+/* SECTION */
+.sec-label{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.panel{display:none;}
+/* MODE */
+.mode-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+/* MANUAL */
+.legend{font-size:13px;color:#5a5040;margin-bottom:14px;line-height:1.9;}
+.dot{display:inline-block;width:20px;height:13px;border-radius:2px;vertical-align:middle;margin-right:3px;}
+.d6{background:#4a7c9e;}.d7{background:var(--ink);}.d8{background:#9e6b4a;}.d9{background:var(--gold);}
+.builder{background:rgba(255,255,255,.45);border:1px solid var(--border);padding:22px;margin-bottom:18px;}
+.prog{font-size:14px;color:#5a5040;margin-bottom:18px;letter-spacing:.5px;}
+.prog span{color:var(--gold);font-weight:600;}
+.line-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.line-lbl{font-size:14px;color:#4a4030;width:72px;flex-shrink:0;}
+.lbtns{display:flex;gap:6px;}
+.lbtn{width:40px;height:34px;border:1px solid var(--border);background:transparent;
+  font-family:'EB Garamond',serif;font-size:15px;cursor:pointer;transition:all .15s;color:var(--ink);}
+.lbtn:hover{background:var(--accent);}
+.lbtn.s6{background:#4a7c9e;color:#fff;border-color:#4a7c9e;}
+.lbtn.s7{background:var(--ink);color:#fff;border-color:var(--ink);}
+.lbtn.s8{background:#9e6b4a;color:#fff;border-color:#9e6b4a;}
+.lbtn.s9{background:var(--gold);color:#fff;border-color:var(--gold);}
+.lprev{font-size:20px;margin-left:6px;min-width:28px;}
+/* AUTO */
+.tabs{display:flex;border:1px solid var(--border);width:fit-content;margin-bottom:16px;}
+.tab{padding:8px 20px;border:none;background:transparent;font-family:'EB Garamond',serif;font-size:14px;
+  cursor:pointer;color:var(--muted);border-right:1px solid var(--border);transition:all .2s;}
+.tab:last-child{border-right:none;}
+.tab.active{background:var(--ink);color:var(--paper);}
+.mdesc{font-size:15px;color:#5a5040;font-style:italic;padding:10px 14px;
+  border-left:3px solid var(--gold);background:rgba(184,134,11,.04);margin-bottom:18px;line-height:1.65;}
+.throw-anim{min-height:52px;margin:12px 0;display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+.coin{width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,#c8a96e,#8b6914);
+  display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;
+  border:2px solid #a07820;animation:cspin .35s ease-out;}
+@keyframes cspin{from{transform:scale(.3) rotateY(180deg);opacity:0}to{transform:scale(1) rotateY(0);opacity:1}}
+.yarrow-sticks{font-size:26px;letter-spacing:3px;color:var(--gold);animation:fadeup .4s ease;}
+@keyframes fadeup{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.step-line{display:flex;align-items:center;gap:10px;margin:6px 0;animation:fadeup .3s ease;}
+.step-num{font-size:11px;letter-spacing:2px;color:var(--muted);width:52px;}
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:14px;margin:28px 0;color:var(--muted);font-size:12px;letter-spacing:2px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+/* HEXAGRAM CARD */
+.hcard{background:rgba(255,255,255,.48);border:1px solid var(--border);padding:28px;margin-bottom:20px;position:relative;}
+.hcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.hhead{display:flex;align-items:flex-start;gap:28px;margin-bottom:24px;flex-wrap:wrap;}
+.hvisual{text-align:center;flex-shrink:0;}
+.huni{font-size:52px;line-height:1;display:block;margin-bottom:4px;}
+.hsvg{display:block;margin:0 auto 6px;}
+.hinfo{flex:1;}
+.hnum{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.hzh{font-family:'Noto Serif SC',serif;font-size:38px;color:var(--gold);line-height:1;margin-bottom:3px;}
+.hit{font-size:22px;font-style:italic;margin-bottom:4px;color:#2a2018;}
+.hen{font-size:14px;color:#6a6050;letter-spacing:.5px;}
+.htrig{font-size:14px;color:#6a6050;margin-top:8px;line-height:1.65;}
+.tsect{border-top:1px solid var(--border);padding-top:16px;margin-bottom:18px;}
+.tlbl{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:9px;}
+.tsect p{font-size:17.5px;line-height:1.85;font-style:italic;color:#2a2018;}
+.tsect .comm{font-style:normal;font-size:16px;margin-top:12px;color:#2e2418;line-height:1.78;}
+.tsect .tuan{font-style:normal;font-size:15.5px;margin-top:10px;color:#5a5040;line-height:1.7;border-left:2px solid var(--border);padding-left:14px;}
+/* MOVING LINES */
+.ml-sect{border-top:1px solid var(--border);padding-top:16px;}
+.ml-item{margin-bottom:16px;padding-left:14px;border-left:2px solid var(--gold);}
+.ml-num{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.ml-text{font-size:16.5px;line-height:1.78;font-style:italic;color:#2a2018;}
+.ml-comm{font-size:15px;line-height:1.65;margin-top:5px;color:#2e2418;}
+/* MUTATION */
+.mut-arrow{text-align:center;padding:16px 0;font-size:26px;color:var(--gold);letter-spacing:6px;}
+.mut-label{text-align:center;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+/* ACTIONS */
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;}
+/* LINE DRAWING SVG */
+svg.hexsvg line{stroke:var(--ink);stroke-width:3;stroke-linecap:round;}
+/* ===== MOBILE / PWA ENHANCEMENTS ===== */
+/* Safe area insets for notched phones */
+.wrap{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right));padding-bottom:max(80px,calc(env(safe-area-inset-bottom) + 60px));}
+/* Larger touch targets */
+.btn{min-height:44px;}
+.lbtn{width:48px;height:44px;font-size:16px;}
+/* Prevent text selection on buttons */
+.btn,.lbtn,.tab,.method-tab{-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
+/* Smooth scrolling & momentum */
+html{-webkit-overflow-scrolling:touch;}
+/* Better tap feedback */
+.btn:active{transform:scale(.97);}
+.lbtn:active{transform:scale(.93);}
+/* Install banner */
+#install-banner{
+  display:none;position:fixed;bottom:0;left:0;right:0;
+  background:var(--ink);color:var(--paper);
+  padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:12px;
+  font-family:'EB Garamond',serif;font-size:15px;
+  z-index:999;box-shadow:0 -4px 20px rgba(0,0,0,.2);
+  transform:translateY(100%);transition:transform .35s ease;
+}
+#install-banner.show{transform:translateY(0);}
+#install-banner .ib-icon{font-size:28px;flex-shrink:0;}
+#install-banner .ib-text{flex:1;line-height:1.4;}
+#install-banner .ib-text small{opacity:.7;font-size:13px;display:block;}
+#install-banner .ib-btn{
+  background:var(--gold);color:#fff;border:none;
+  padding:8px 16px;font-family:'EB Garamond',serif;font-size:14px;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+}
+#install-banner .ib-close{
+  background:transparent;border:none;color:var(--paper);
+  opacity:.6;cursor:pointer;font-size:20px;padding:4px;flex-shrink:0;
+}
+/* Offline indicator */
+#offline-badge{
+  display:none;position:fixed;top:12px;right:12px;
+  background:#8b4513;color:#fff;font-size:11px;letter-spacing:2px;
+  padding:4px 10px;z-index:998;font-family:'EB Garamond',serif;
+}
+body.offline #offline-badge{display:block;}
+@media(max-width:480px){
+  .hzh{font-size:28px;}.huni{font-size:38px;}.hcard{padding:18px 14px;}
+  .mode-row{flex-direction:column;}
+  .mode-row .btn{text-align:center;}
+  .actions{flex-direction:column;}
+  .actions .btn{text-align:center;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="h-zh">易經</div>
+  <div class="h-title">I Ching — Oracolo</div>
+  <div class="h-sub">Traduzione di Richard Wilhelm</div>
+</header>
+
+<!-- MODE SELECT -->
+<div class="sec-label">Modalità di consultazione</div>
+<div class="mode-row">
+  <button class="btn" id="btn-m" onclick="setMode('manual')">✦ Inserimento manuale</button>
+  <button class="btn" id="btn-a" onclick="setMode('auto')">⟳ Generazione automatica</button>
+</div>
+
+<!-- MANUAL PANEL -->
+<div class="panel" id="manual-panel">
+  <div class="sec-label">Inserisci le sei linee — dalla 1ª (in basso) alla 6ª (in cima)</div>
+  <div class="legend">
+    <span class="dot d6"></span>6 = Yin mobile &nbsp;
+    <span class="dot d7"></span>7 = Yang stabile &nbsp;
+    <span class="dot d8"></span>8 = Yin stabile &nbsp;
+    <span class="dot d9"></span>9 = Yang mobile
+  </div>
+  <div class="builder">
+    <div class="prog">Linee inserite: <span id="lcount">0</span> / 6</div>
+    <div id="manual-lines"></div>
+  </div>
+  <button class="btn btn-primary" id="btn-compute" onclick="computeHex()" disabled>Consulta l'Oracolo</button>
+  <button class="btn btn-sm" style="margin-left:10px" onclick="resetManual()">Ricomincia</button>
+</div>
+
+<!-- AUTO PANEL -->
+<div class="panel" id="auto-panel">
+  <div class="sec-label">Metodo</div>
+  <div class="tabs">
+    <button class="tab active" id="tab-c" onclick="setMethod('coins')">Tre Monete</button>
+    <button class="tab" id="tab-y" onclick="setMethod('yarrow')">Steli di Achillea</button>
+  </div>
+  <div class="mdesc" id="mdesc">
+    Tre monete per linea (King Wen): ogni moneta vale 2 (yang/testa) o 3 (yin/croce).
+    Somma per linea: 6=Yin mobile, 7=Yang stabile, 8=Yin stabile, 9=Yang mobile.
+  </div>
+  <div class="throw-anim" id="tanim"></div>
+  <button class="btn btn-primary" id="btn-throw" onclick="throwAll()">Lancia tutte le linee</button>
+  <button class="btn btn-sm" style="margin-left:10px" id="btn-step" onclick="throwNextLine()">Lancia linea per linea</button>
+</div>
+
+<!-- RESULT PANEL -->
+<div class="panel" id="result-panel">
+  <div class="divider">⬡ risultato della consultazione ⬡</div>
+  <div id="res-primary"></div>
+  <div id="res-moving"></div>
+  <div id="res-secondary"></div>
+  <div class="actions">
+    <button class="btn btn-primary" onclick="resetAll()">Nuova consultazione</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ============================================================
+// TRIGRAMS: key = 3-bit value (bit0=bottom line, bit2=top line)
+// ============================================================
+const TG = {
+  7:{zh:'乾',it:'Cielo (Il Creativo)',sym:'☰'},
+  0:{zh:'坤',it:'Terra (Il Ricettivo)',sym:'☷'},
+  4:{zh:'震',it:'Tuono (Il Risveglio)',sym:'☳'},
+  2:{zh:'坎',it:'Acqua (L\'Abissale)',sym:'☵'},
+  1:{zh:'艮',it:'Monte (Il Quieto)',sym:'☶'},
+  5:{zh:'巽',it:'Vento (Il Penetrante)',sym:'☴'},
+  6:{zh:'離',it:'Fuoco (L\'Aderente)',sym:'☲'},
+  3:{zh:'兌',it:'Lago (Il Sereno)',sym:'☱'}
+};
+
+// Unicode hexagram codepoints: U+4DC0 = hexagram 1, sequential by King Wen order
+// We'll compute from line values directly
+// Unicode trigram order (for combining): standard binary
+const UNI_TRIGRAM = ['☷','☶','☵','☴','☳','☲','☱','☰']; // bits 0-7
+
+// ============================================================
+// ALL 64 HEXAGRAMS
+// Format: [num, zh, it, en, binary(lsb=line1), judgement, image, commentary,
+//          [moving_line_1..6_text], tuan]
+// binary: 6 bits, bit0=line1(bottom), bit5=line6(top); 1=yang, 0=yin
+// ============================================================
+const HEX = {};
+
+function h(num,zh,it,en,bin,j,img,comm,ml,tuan){
+  HEX[bin]={num,zh,it,en,bin,j,img,comm,ml,tuan};
+}
+
+h(1,'乾','Il Creativo','The Creative',63,
+'Il Creativo opera sublime successo, avanzando con fermezza e perseveranza.',
+'Il moto del cielo è pieno di potenza. Così l\'uomo superiore si rende forte e instancabile.',
+'Sei tratti yang: potenza creatrice pura. Il cielo non si stanca mai nel suo moto circolare; così l\'uomo superiore coltiva la forza incessante. La virtù fondamentale è la costanza creatrice che genera senza esaurirsi.',
+['Il drago è nascosto. Non si deve agire.','Appare un drago nel campo. È utile vedere il grande uomo.','L\'uomo superiore è creativo tutto il giorno. La sera vigila con preoccupazione. Pericolo ma nessuna colpa.','Oscillare sull\'abisso. Nessuna colpa.','Il drago vola nel cielo. È utile vedere il grande uomo.','Il drago arrogante avrà motivo di pentirsi.','Appare un gruppo di draghi senza testa. Fortuna.'],
+'Grande è il Creativo — potenza originale, armonia di tutti gli esseri.');
+
+h(2,'坤','Il Ricettivo','The Receptive',0,
+'Il Ricettivo opera sublime successo. La quieta perseveranza di una giumenta porta fortuna. L\'uomo superiore, se deve intraprendere qualcosa e tenta di guidare, erra; se segue, trova guida.',
+'La condizione della terra è la resa docile. Così l\'uomo superiore, di grande virtù, porta e nutre il mondo.',
+'Sei tratti yin: devozione pura, capacità di portare e nutrire. La terra sostiene tutti gli esseri senza distinzione. Non è debolezza ma forza ricettiva: chi segue invece di guidare trova la via giusta.',
+['Cammini sul ghiaccio: il freddo solido si avvicina.','Diritto, quadrato, grande. Senza scopo eppure nulla rimane senza vantaggio.','Bellezza nascosta. Perseveranza possibile. Se al servizio del re, non cercare opere proprie. Portare a compimento.','Un sacco allacciato. Nessuna colpa, nessuna lode.','Una veste gialla porta fortuna suprema.','Draghi combattono nella pianura. Sangue giallo e nero.','Perseveranza duratura porta vantaggio.'],
+'Perfetta la devozione del Ricettivo: riceve e porta tutto nella sua grandezza.');
+
+h(3,'屯','La Difficoltà Iniziale','Difficulty at the Beginning',17,
+'La Difficoltà Iniziale opera sublime successo avanzando con la perseveranza. Non agire avventatamente. È utile designare principi ausiliari.',
+'Nuvole e tuono: immagine della Difficoltà Iniziale. Così l\'uomo superiore porta ordine nel caos.',
+'Come una pianta che germina dalla terra, il progresso richiede sforzo ma la vita è certa. Tuono sotto acqua: movimento impetuoso nel pericolo. Il momento è difficile ma gravido di possibilità.',
+['Indugio e ostacoli. Utile restare perseveranti. Utile designare principi ausiliari.','Le difficoltà si accumulano. Cavallo e carro si separano. Non è un rapinatore, vuole corteggiare. La giovane è casta, non acconsente. Dopo dieci anni si sposerà.','Chi insegue cervi senza guida nel bosco. L\'uomo superiore comprende e rinuncia. Continuare porta umiliazione.','Cavallo e carro si separano. Cercare l\'unione porta fortuna. Avanzare favorevole.','Difficoltà nel dispensare favori. Piccola perseveranza fortuna; grande perseveranza sventura.','Cavallo e carro si separano. Lacrime di sangue scorrono.'],
+'Nella difficoltà iniziale è il fondamento. Chi persevera attraverso il groviglio porta ordine.');
+
+h(4,'蒙','La Stoltezza Giovanile','Youthful Folly',34,
+'La Stoltezza Giovanile ha successo. Non sono io che cerco il giovane stolto; il giovane stolto mi cerca. La perseveranza porta vantaggio.',
+'Una fonte scaturisce alla base della montagna: immagine della Stoltezza Giovanile. Così l\'uomo superiore coltiva il carattere attraverso la condotta risolutiva.',
+'La fonte ai piedi della montagna scaturisce spontanea ma la sua direzione è incerta. L\'insegnamento autentico avviene solo quando lo studente è pronto a ricevere. Il maestro attende la domanda genuina.',
+['Per sviluppare lo stolto è utile la disciplina. Le catene devono essere rimosse. Continuare porta vergogna.','Sopportare gli stolti con accondiscendenza porta fortuna. Il figlio capace governa la casa.','Non usare la donna. Ella vede un uomo possente e non conserva sé stessa. Nulla porta vantaggio.','Il giovane stolto si umilia.','Stoltezza giovanile infantile porta fortuna.','Punire la stoltezza. Non commettere violazione; evitare la violazione. Nessuna colpa.'],
+'Nella stoltezza giovanile è il germe della saggezza. Chi sa attendere il momento giusto diventa maestro.');
+
+h(5,'需','L\'Attesa','Waiting',23,
+'L\'Attesa. Se si è veritieri si ha luce e successo. La perseveranza porta fortuna. È utile attraversare le grandi acque.',
+'Nuvole salgono al cielo: immagine dell\'Attesa. Così l\'uomo superiore mangia e beve, è gioioso e sereno.',
+'Acqua in cielo — la pioggia deve ancora cadere. L\'attesa non è passività ma fiducia interiore: certezza che il momento giusto arriverà. Chi ha pazienza si nutre nel frattempo; corpo e spirito restano forti.',
+['Attesa nel prato. Utile restare in costanza. Nessuna colpa.','Attesa sulla sabbia. Vi sono piccole parole. Alla fine viene la fortuna.','Attesa nel fango invita l\'arrivo del nemico.','Attesa nel sangue. Uscire dalla fossa.','Attesa davanti al cibo e alla bevanda. Perseveranza porta fortuna.','Si cade nella fossa. Vengono tre ospiti non invitati. Onorarli porta fortuna.'],
+'L\'attesa nella verità è la più alta saggezza. Il cielo nutre chi sa aspettare il proprio momento.');
+
+h(6,'訟','Il Conflitto','Conflict',58,
+'Il Conflitto. Sei sincero e incontri ostruzione. Una pausa cauta nel mezzo porta fortuna. Arrivare alla fine porta sventura. È utile vedere il grande uomo. Non è utile attraversare le grandi acque.',
+'Cielo e acqua si muovono in direzioni opposte: immagine del Conflitto. Così l\'uomo superiore, nel pianificare, considera gli inizi.',
+'Il cielo si muove verso l\'alto, l\'acqua verso il basso: movimento contrario, radice del conflitto. La soluzione non è insistere ma fermarsi a metà, cercare un mediatore. Portare il conflitto fino in fondo è sempre perdita.',
+['Non perpetuare l\'affare. Vi sono piccole parole ma alla fine fortuna.','Non si può vincere la disputa. Si fa ritorno e si fugge. Nessuna calamità.','Vivere di virtù antica. Perseveranza porta pericolo ma alla fine fortuna.','Non si può vincere la disputa. Si fa ritorno e si sottomette al destino. Cambiare porta pace e fortuna.','Disputare davanti al grande uomo porta alta fortuna.','Anche se ricompensato con la cintura di pelle, alla fine sarà strappata tre volte.'],
+'Nel conflitto la verità è il solo fondamento. Chi sa fermarsi a tempo trova la pace.');
+
+h(7,'師','L\'Esercito','The Army',2,
+'L\'Esercito ha bisogno di perseveranza e di un uomo forte. Fortuna senza colpa.',
+'Nel mezzo della terra c\'è acqua: immagine dell\'Esercito. Così l\'uomo superiore grazie alla sua generosità aumenta la popolazione.',
+'L\'acqua raccolta nel ventre della terra: riserva nascosta che diventa forza. Un solo uomo forte alla guida coordina la moltitudine. Disciplina e giustizia sono le fondamenta della vittoria.',
+['L\'esercito deve muoversi in ordine. Se ciò non è fatto bene, sventura è in agguato.','Essere nel mezzo dell\'esercito porta fortuna senza colpa. Il re conferisce tripla decorazione.','Forse l\'esercito porta cadaveri nel carro. Sventura.','L\'esercito si ritira. Nessuna colpa.','Vi è selvaggina nel campo. È utile catturarla. Il maggiore comandi l\'esercito. Perseveranza porta sventura.','Il grande principe fonda stati e assegna feudi. Non si devono usare uomini inferiori.'],
+'L\'esercito vince con la disciplina e la fiducia. Il grande condottiero porta ordine nel caos.');
+
+h(8,'比','La Solidarietà','Holding Together',16,
+'La Solidarietà porta fortuna. Indaga l\'oracolo: hai sublimità, costanza e perseveranza? Allora non vi è colpa. Chi arriva troppo tardi avrà sventura.',
+'Sulla terra v\'è acqua: immagine della Solidarietà. Così i re antichi conferivano feudi e mantenevano stretti rapporti con i vassalli.',
+'L\'acqua sulla terra si aduna spontaneamente verso le depressioni. La solidarietà nasce da un centro forte che gli altri riconoscono come guida. Appartenere è naturale; restare isolati è contro natura.',
+['Tenersi insieme con lui in verità e lealtà. Nessuna colpa. La verità è come una brocca piena. Alla fine fortuna.','Tenersi insieme a lui nell\'interno. Perseveranza porta fortuna.','Ti tieni insieme con uomini sbagliati.','Tenersi insieme verso l\'esterno. Perseveranza porta fortuna.','Manifestazione della solidarietà. Il re usa tre battute non avvertendo la selvaggina. Fortuna.','Nessuna testa per stare insieme. Sventura.'],
+'La solidarietà vera nasce dal cuore. Chi si unisce nella verità edifica qualcosa di duraturo.');
+
+h(9,'小畜','Il Potere Disciplinante del Piccolo','The Taming Power of the Small',47,
+'Il Potere Disciplinante del Piccolo ha successo. Nuvole dense, nessuna pioggia dalla campagna dell\'ovest.',
+'Il vento spira nel cielo: immagine del Potere Disciplinante del Piccolo. Così l\'uomo superiore perfeziona il carattere della sua virtù.',
+'Un solo tratto yin frena i cinque yang: piccola forza che trattiene il grande. Come il vento che raduna nuvole senza ancora produrre pioggia, l\'influenza sottile ritarda ma non blocca per sempre.',
+['Ritornare alla via — qual colpa vi può essere? Fortuna.','Essere trascinati a ritornare porta fortuna.','I raggi si staccano dal carro. Marito e moglie si guardano negli occhi.','Se sei veritiero, il sangue scompare e la paura cede il posto. Nessuna colpa.','Se sei veritiero e leale nella solidarietà, sei ricco del tuo vicino.','È già piovuto, ci si è posati. Onorata è la virtù. La donna perseverante incontra il pericolo. La luna è quasi piena. Il gentiluomo che marcia trova sventura.'],
+'Il piccolo può trattenere il grande attraverso la perseveranza gentile. La goccia modella la pietra.');
+
+h(10,'履','Il Camminare','Treading',59,
+'Il Camminare sulla coda della tigre. Essa non morde l\'uomo. Successo.',
+'Cielo sopra, lago sotto: immagine del Camminare. Così l\'uomo superiore distingue tra alto e basso e rafforza la mente del popolo.',
+'Il lago è sotto il cielo: l\'umile cammina sotto il sublime senza essere schiacciato. Se ci si comporta con gioia e semplicità senza provocare la tigre, non morde. Il giusto comportamento nelle relazioni è la salvaguardia migliore.',
+['Camminare semplicemente in avanti. Nessuna colpa.','Cammini su percorso liscio e pianeggiante. Perseveranza dell\'uomo oscuro porta fortuna.','Il cieco può vedere, lo zoppo può camminare. Chi calpesta la coda della tigre viene morso. Sventura.','Calpesta la coda della tigre. Attenzione! Attenzione! Alla fine fortuna.','Camminare decisivo. Perseveranza nonostante il pericolo porta fortuna.','Considera il tuo modo di camminare e soppesa i presagi favorevoli. Grande fortuna.'],
+'Il modo di camminare determina il destino. Chi sa dove mettere i piedi non teme la tigre.');
+
+h(11,'泰','La Pace','Peace',7,
+'La Pace. Il piccolo se ne va, il grande si avvicina. Fortuna e successo.',
+'Cielo e terra si uniscono: immagine della Pace. Così il sovrano divide e perfeziona il Tao del cielo e della terra e presta aiuto al popolo.',
+'La terra in alto, il cielo in basso: paradossalmente è la posizione della pace. Il cielo vuole salire, la terra vuole scendere — si incontrano nel mezzo in scambio vitale. Le virtù governano mentre le qualità mediocri si ritirano.',
+['Quando l\'erba è sradicata, la zolla viene con essa. Avanzare porta fortuna.','Sopportare i non-civilizzati con accondiscendenza, attraversare il fiume con decisione, non trascurare il lontano. Così si cammina nel mezzo.','Nessuna pianura che non decada. Nessun\'andata senza ritorno. Chi si mantiene nella difficoltà non pecca.','Egli discende senza vantarsi della sua ricchezza, insieme ai vicini.','Il sovrano I dà sua figlia in sposa. Benedizione e fortuna suprema.','Il muro crolla nella fossa. Non usare l\'esercito ora. La perseveranza porta umiliazione.'],
+'Nella pace il cielo e la terra si toccano. Il grande viene verso il piccolo: il segreto di ogni prosperità.');
+
+h(12,'否','La Stagnazione','Standstill',56,
+'La Stagnazione. Persone malvagie non favoriscono la perseveranza dell\'uomo superiore. Il grande se ne va, il piccolo si avvicina.',
+'Cielo e terra non si uniscono: immagine della Stagnazione. Così l\'uomo superiore si ritira nella virtù interiore per evitare le difficoltà.',
+'Il cielo è in alto, la terra in basso — ognuno nella posizione naturale ma senza scambio vitale. Il mondo è bloccato. L\'uomo superiore deve raccogliersi nell\'interiorità, preservare la virtù, attendere.',
+['Quando l\'erba è strappata, la zolla viene con essa. Perseveranza porta fortuna e successo.','Sopportare i non-civilizzati con accondiscendenza porta fortuna agli uomini piccoli. Per il grande uomo porta successo.','Portano vergogna nascosta.','Chi agisce secondo l\'ordine di Dio non pecca. I compagni riceveranno la benedizione.','La stagnazione si avvicina alla fine. Fortuna per il grande uomo. "Potrebbe fallire" — così egli la lega ai rami del gelso.','La stagnazione è rovesciata. Prima stagnazione, poi fortuna.'],
+'Nella stagnazione l\'uomo superiore si ritrae. Preservare la virtù nel buio è preparare la luce futura.');
+
+h(13,'同人','La Comunità con gli Uomini','Fellowship with Men',62,
+'La Comunità con gli Uomini nella natura aperta porta successo. È utile attraversare le grandi acque. La perseveranza dell\'uomo superiore porta vantaggi.',
+'Fuoco sotto al cielo: immagine della Comunità con gli Uomini. Così l\'uomo superiore organizza i clan e fa distinzioni tra le cose.',
+'Il fuoco si innalza verso il cielo — stessa direzione, stessa aspirazione. La comunità vera nasce da valori condivisi. Chi forma comunità solo con i propri simili rimane in una cerchia ristretta; la vera comunità abbraccia tutti.',
+['Comunità con gli uomini alla porta. Nessuna colpa.','Comunità con gli uomini nel clan porta umiliazione.','Egli nasconde armi nel cespuglio e sale la sua alta collina. Per tre anni non si alza.','Egli sale le sue mura; non riesce ad attaccare. Fortuna.','Uomini legati dalla comunità prima piangono poi ridono. Dopo grandi lotte riescono a incontrarsi.','Comunità con gli uomini nel prato. Nessun rimorso.'],
+'La vera comunità abbraccia il diverso. Chi esce dal proprio cerchio trova l\'umanità intera.');
+
+h(14,'大有','Il Grande Possesso','Possession in Great Measure',55,
+'Il Grande Possesso. Sublime successo.',
+'Fuoco nel cielo: immagine del Grande Possesso. Così l\'uomo superiore arresta il male e inalza il bene, obbedendo al volere del cielo con bontà.',
+'Un solo tratto yin in quinta posizione (del sovrano) trattiene i cinque yang intorno: la forza si raduna attorno alla morbidezza centrale. Il grande possesso non è accumulo egoistico ma responsabilità verso tutti.',
+['Nessuna relazione con ciò che è dannoso. Se si rimane consapevoli della difficoltà, non vi è colpa.','Un grande carro da carico. Si può caricarvi e intraprendere un viaggio. Nessuna colpa.','Un principe lo offre all\'imperatore del cielo. Un uomo piccolo non può farlo.','Non è suo errore quello che fa. Nessuna colpa.','La sua fiducia è accessibile, dignitosa, e fortunata.','Dal cielo discende la benedizione. Fortuna. Nulla che non sia utile.'],
+'Il grande possesso si conserva con la modestia e il servizio. La luce che irradia verso tutti è la vera ricchezza.');
+
+h(15,'謙','La Modestia','Modesty',4,
+'La Modestia opera con successo. L\'uomo superiore porta a termine.',
+'Nel mezzo della terra c\'è una montagna: immagine della Modestia. Così l\'uomo superiore riduce ciò che è troppo abbondante e aumenta ciò che è troppo scarso.',
+'La montagna è nascosta sotto la terra: la grande forza non si esibisce. Il cielo svuota il pieno e riempie il vuoto. La modestia è la virtù che il cielo non castiga mai.',
+['L\'uomo superiore modesto attraversa le grandi acque. Fortuna.','Modestia che si manifesta. Perseveranza porta fortuna.','L\'uomo superiore di merito e modestia porta le cose a compimento. Fortuna.','Nulla che non sia utile per la modestia in movimento.','Non usare la ricchezza con il vicino. Utile attaccare con la forza. Nulla che non sia utile.','Modestia che si manifesta. Utile mettere in marcia eserciti contro le città e gli stati.'],
+'La modestia vera è la forza che si conosce. La montagna nascosta nella terra è più solida di quella che si erge.');
+
+h(16,'豫','L\'Entusiasmo','Enthusiasm',8,
+'L\'Entusiasmo. È utile designare aiutanti e mettere eserciti in marcia.',
+'Tuono uscendo dalla terra con impeto: immagine dell\'Entusiasmo. Così i re antichi compivano musica in onore del merito e invitavano gli antenati.',
+'Il tuono esplode dalla terra — energia trattenuta che si libera. L\'entusiasmo è la forza che mette tutto in movimento. La musica degli antichi accendeva l\'energia collettiva, allineando gli animi verso un fine comune.',
+['Entusiasmo che si fa proclamare porta sventura.','Duro come una roccia. Non un giorno intero. Perseveranza porta fortuna.','Entusiasmo che guarda verso l\'alto porta rimpianto. Indugio porta rimpianto.','La fonte dell\'entusiasmo ottiene grande successo. Non dubitare. Amici si radunano come forcina per capelli.','Perseverante nella malattia, non muore.','Entusiasmo annebbiato. Se cambia, nessuna colpa.'],
+'L\'entusiasmo è il tuono che sveglia la terra. Chi lo incarna diventa centro di energia per tutti.');
+
+h(17,'隨','Il Seguire','Following',25,
+'Il Seguire ha successo sublime. La perseveranza porta vantaggio. Nessuna colpa.',
+'Al di sopra del lago v\'è il tuono: immagine del Seguire. Così l\'uomo superiore al calar della sera entra e si riposa.',
+'Il tuono si quieta nel lago: il grande si adatta ai ritmi naturali. Seguire non è debolezza ma intelligenza: saper riconoscere il momento giusto, adattarsi, stare con ciò che è vivo nel presente.',
+['L\'autorità nel seguire cambia. Perseveranza porta fortuna. Andare all\'esterno e associarsi produce risultati.','Se ci si lega al bambino, si perde l\'uomo adulto.','Se ci si lega all\'uomo adulto, si perde il bambino. Attraverso il seguire si trova ciò che si cerca. Utile restare perseveranti.','Il Seguire ottiene prede. Perseveranza porta sventura. Con verità sulla via e chiarezza si comprende. Nessuna colpa.','Leale a ciò che è buono, fortuna.','Egli è legato e imprigionato, poi il re sacrifica sul monte occidentale.'],
+'Il seguire saggiamente è la via del saggio. Chi sa quando cedere conosce il segreto della forza.');
+
+h(18,'蠱','Il Lavoro su ciò che è Guasto','Work on What Has Been Spoiled',37,
+'Il Lavoro su ciò che è Guasto ha successo sublime. È utile attraversare le grandi acque. Prima del giorno di partenza tre giorni; dopo il giorno di partenza tre giorni.',
+'Vento al piede della montagna: immagine del Lavoro su ciò che è Guasto. Così l\'uomo superiore stimola le persone e rafforza il loro spirito.',
+'Il carattere cinese Gu mostra un vaso con vermi — ciò che era buono è marcito. Ma il guasto è opera umana e dall\'opera umana può essere corretto. Il momento è critico ma la risoluzione è possibile.',
+['Mettere ordine nel guasto del padre. Se vi è un figlio, il padre trapassato rimane senza colpa. Pericolo, ma alla fine fortuna.','Mettere ordine nel guasto della madre. Non essere troppo perseveranti.','Mettere ordine nel guasto del padre. Vi sarà piccolo rimorso. Nessuna grande colpa.','Tollerare il guasto del padre. Continuando si vedrà umiliazione.','Mettere ordine nel guasto del padre. Si ottiene lode.','Non servire né re né principi. Stabilire come propri scopi i propri valori superiori.'],
+'Il guasto chiede risoluzione. Da ogni decadimento affrontato con chiarezza può nascere un nuovo inizio.');
+
+h(19,'臨','L\'Approccio','Approach',3,
+'L\'Approccio ha successo sublime. La perseveranza porta vantaggio. Quando arriva l\'ottavo mese vi sarà sventura.',
+'Sopra la terra vi è il lago: immagine dell\'Approccio. Così l\'uomo superiore è inesauribile nell\'insegnare e senza limiti nel proteggere il popolo.',
+'Due forti tratti yang avanzano dal basso, l\'influenza benefica si espande. Il tempo è favorevole. Ma la luce che cresce porta il ricordo che diminuirà — l\'ottavo mese vedrà l\'inversione. Usare il tempo favorevole con consapevolezza.',
+['Approccio comune. Perseveranza porta fortuna.','Approccio comune. Fortuna tutto intorno. Nulla di non favorevole.','Approccio piacevole. Nulla di favorevole. Se già si è rattristati, si è senza colpa.','Approccio completo. Nessuna colpa.','Approccio della saggezza, utile per il grande principe. Fortuna.','Approccio magnanimo. Fortuna. Nessuna colpa.'],
+'Il tempo dell\'approccio è dono del cielo. Chi avanza con saggezza porta benefici duraturi.');
+
+h(20,'觀','La Contemplazione','Contemplation',40,
+'La Contemplazione. La purificazione è stata compiuta, ma non ancora l\'offerta. Piena di fiducia guarda verso l\'alto.',
+'Il vento spira sulla terra: immagine della Contemplazione. Così i re antichi visitavano le regioni del mondo, osservavano il popolo e impartivano insegnamenti.',
+'Il vento penetra ogni dove sulla terra, osservando silenziosamente tutto. La contemplazione è la più alta forma di presenza: vedere le cose nella loro natura vera senza interferire. Come il rituale prima dell\'offerta, il momento è carico di sacralità silenziosa.',
+['Contemplazione giovanile. Per l\'uomo piccolo nessuna colpa. Per l\'uomo superiore umiliazione.','Contemplazione attraverso la fessura della porta. Utile per la perseveranza di una donna.','Contemplazione della mia vita per decidere la via avanti e indietro.','Contemplazione della gloria del regno. Utile essere ospiti del re.','Contemplazione della mia vita. L\'uomo superiore è senza colpa.','Contemplazione della sua vita. L\'uomo superiore è senza colpa.'],
+'La vera contemplazione è lo sguardo che penetra. Chi vede senza distorcere conosce il cuore del mondo.');
+
+h(21,'噬嗑','Il Mordere Attraverso','Biting Through',49,
+'Il Mordere Attraverso porta successo. È utile fare uso dell\'amministrazione della legge.',
+'Tuono e fulmine: immagine del Mordere Attraverso. Così i re antichi rafforzavano le leggi con chiari castighi.',
+'Nella bocca aperta c\'è un ostacolo — bisogna mordere attraverso. Il tuono mette in movimento, il fuoco illumina: superare l\'ostacolo richiede sia chiarezza sul problema sia forza per risolverlo.',
+['I piedi sono messi in ceppi e le orecchie sono tagliate. Nessuna colpa.','Morde nella morbida carne e fa scomparire il naso. Nessuna colpa.','Morde nella vecchia carne secca e incontra qualcosa di velenoso. Leggera umiliazione. Nessuna colpa.','Morde su nervature di carne secca. Ottiene frecce metalliche. Utile essere consapevoli delle difficoltà e perseverare. Fortuna.','Morde sulla carne secca magra. Ottiene oro giallo. Perseveranza consapevole del pericolo porta nessuna colpa.','Il suo collo è portato al giogo e le sue orecchie sono tagliate. Sventura.'],
+'Il mordere attraverso è la giustizia in azione. Chi affronta gli ostacoli con chiarezza ristabilisce l\'ordine.');
+
+h(22,'賁','La Grazia','Grace',38,
+'La Grazia ha successo. Nelle piccole cose è utile intraprendere qualcosa.',
+'Il fuoco ai piedi della montagna: immagine della Grazia. Così l\'uomo superiore chiarisce le questioni ordinarie ma non osa decidere questioni controverse.',
+'Il fuoco illumina il piede della montagna: la luce cosmetica, la bellezza che adorna. La grazia è ornamento, forma che abbellisce la sostanza. Nelle grandi decisioni conta la sostanza; la forma viene dopo.',
+['Egli adorna le dita dei piedi, abbandona il carro e cammina.','Adorna la sua barba.','Adornato e umido. Perseveranza duratura porta fortuna.','Grazia o semplicità? Un cavallo bianco viene come se volasse. Non è un rapinatore, corteggerà a tempo debito.','Grazia nei colli e nei giardini. Il rotolo di seta è scarso e piccolo. Umiliazione ma alla fine fortuna.','Grazia semplice. Nessuna colpa.'],
+'La grazia vera illumina senza ingannare. L\'adornamento giusto rivela la bellezza interiore senza nasconderla.');
+
+h(23,'剝','Lo Sfaldamento','Splitting Apart',32,
+'Lo Sfaldamento. Non è utile andare da nessuna parte.',
+'La montagna poggia sulla terra: immagine dello Sfaldamento. Così coloro che stanno in alto assicurano la loro posizione solo per la generosità verso coloro che stanno in basso.',
+'Cinque tratti yin hanno corroso tutto il yang — resta solo un piccolo tratto yang in cima. È pericoloso agire. Ma l\'ultimo frutto yang non ancora caduto contiene i semi del rinnovamento.',
+['La gamba del letto si fende. Chi distrugge la perseveranza trova sventura.','Il bordo del letto si fende. Chi distrugge la perseveranza trova sventura.','Egli rompe con loro. Nessuna colpa.','Il letto è sfaldato quasi fino alla pelle. Sventura.','Un banco di pesci. Grazia e protezione dei favoriti del palazzo. Tutto è vantaggioso.','C\'è un grande frutto non ancora mangiato. L\'uomo superiore ottiene un carro. Il palazzo del piccolo uomo si sfaldato.'],
+'Nello sfaldamento si preserva il seme. Il frutto che cade nella terra porta in sé la prossima primavera.');
+
+h(24,'復','Il Ritorno','Return',1,
+'Il Ritorno. Successo. Uscita e ingresso senza errore. I compagni vengono senza colpa. Per ripercorrere la propria via ci vogliono sette giorni. È utile avere dove andare.',
+'Il tuono è nel mezzo della terra: immagine del Ritorno. Così i re antichi chiudevano i passi al solstizio d\'inverno. Mercanti e stranieri non si muovevano.',
+'Il primo tratto yang riappare dopo che era scomparso — il solstizio d\'inverno, il punto di svolta. La luce ritorna. Il momento è ancora fragile: il yang è appena nato. Lasciare crescere il principio nuovo senza forzarlo.',
+['Ritorno da breve distanza. Nessun rimpianto. Grande fortuna.','Ritorno tranquillo. Fortuna.','Ritorno frequente. Pericolo. Nessuna colpa.','Camminare nel mezzo degli altri, eppure si ritorna soli.','Ritorno nobile. Nessun rimpianto.','Mancando del ritorno, sventura. Calamità dall\'interno e dall\'esterno. Per dieci anni non si potrà condurre una spedizione.'],
+'Il ritorno è il cuore di ogni ciclo. Il solstizio d\'inverno porta in sé la certezza del sole estivo.');
+
+h(25,'無妄','L\'Innocenza','Innocence',57,
+'L\'Innocenza. Sublime successo. La perseveranza porta vantaggio. Se la condotta non è retta vi sarà calamità.',
+'Sotto il cielo il tuono si muove, tutte le cose raggiungono lo stato naturale dell\'innocenza. Così i re antichi coltivavano e nutrivano tutte le cose.',
+'L\'innocenza è lo stato di chi agisce senza calcolo, secondo la propria natura autentica. Non è ingenuità ma purezza intenzionale. Chi agisce rettamente senza aspettarsi risultati specifici è in armonia col Tao.',
+['Innocente comportamento porta fortuna.','Se non si ara solo per avere il campo, non si sgombera il campo solo per il profitto — utile avere dove andare.','Calamità non ricercata. Forse una vacca legata è il guadagno dell\'uomo che cammina, la perdita del cittadino.','Se si può restare perseveranti, nessuna colpa.','Non usare nessuna medicina per un male non voluto. Passerà da solo.','Innocente comportamento porta sventura se non è il momento. Nulla porta vantaggio.'],
+'L\'innocenza è la via del cielo realizzata nell\'uomo. Chi agisce secondo la propria natura trova la fortuna senza cercarla.');
+
+h(26,'大畜','Il Potere Disciplinante del Grande','The Taming Power of the Great',39,
+'Il Potere Disciplinante del Grande. La perseveranza porta vantaggio. Non mangiare a casa porta fortuna. È utile attraversare le grandi acque.',
+'Il cielo nel mezzo della montagna: immagine del Potere Disciplinante del Grande. Così l\'uomo superiore studia detti di secoli antichi ed esempi del passato per rafforzare il carattere.',
+'Il cielo trattenuto dentro la montagna: forza imponente contenuta. L\'accumulo di energia, conoscenza e virtù attraverso la disciplina crea una riserva inesauribile.',
+['Il pericolo è presente. È utile smettere.','I raggi si staccano dal carro.','Un buon cavallo segue gli altri. Utile essere consapevoli del pericolo e perseverare. Praticare la guida e la difesa armata giornalmente. Utile avere dove andare.','Il pannello di testa di un giovane toro. Grande fortuna.','Le zanne di un castrato. Fortuna.','Si attinge al Tao del cielo. Successo.'],
+'La grande disciplina accumula forza invisibile. Chi trattiene la potenza nella quiete porta a termine imprese impossibili.');
+
+h(27,'頤','La Cura della Nutrizione','The Corners of the Mouth',33,
+'La Cura della Nutrizione. La perseveranza porta fortuna. Presta attenzione a fornire la nutrizione giusta e a quello a cui anela il tuo appetito.',
+'Sotto la montagna vi è il tuono: immagine della Cura della Nutrizione. Così l\'uomo superiore è attento alle proprie parole e moderato nel mangiare e nel bere.',
+'La bocca: yang ai due estremi, yin nel mezzo — la cavità della bocca. Si mastica, si nutre il corpo. Ma anche le parole escono dalla bocca. La cura della nutrizione è duplice: del corpo attraverso il cibo, dell\'anima attraverso le parole.',
+['Tu lasci che la tua magica tartaruga se ne vada, e mi guardi con la mascella cadente. Sventura.','Cercare nutrimento in alto, deviare dalla via per cercare nutrimento sulla collina. Procedere porta sventura.','Agire contro la nutrizione porta sventura. Per dieci anni non agire così. Nulla che sia vantaggioso.','Cercare nutrimento in basso porta fortuna. Spiare con occhi di tigre, bramosia intensa. Nessuna colpa.','Deviare dalla via. Restare perseveranti porta fortuna. Non attraversare le grandi acque.','La fonte della nutrizione. Consapevolezza del pericolo porta fortuna. È utile attraversare le grandi acque.'],
+'La nutrizione saggia alimenta corpo e anima. Le parole che escono dalla bocca costruiscono o distruggono il mondo.');
+
+h(28,'大過','La Preponderanza del Grande','Preponderance of the Great',29,
+'La Preponderanza del Grande. La trave portante è arcuata. È utile avere dove andare. Successo.',
+'Il lago supera gli alberi: immagine della Preponderanza del Grande. Così l\'uomo superiore, quando sta solo, non teme, e quando si ritira dal mondo non è rattristato.',
+'La trave portante è sovraccarica: il centro è troppo forte, le estremità troppo deboli. Situazione di crisi eccezionale che richiede azione eccezionale. Il grande uomo agisce da solo se necessario, senza paura del giudizio.',
+['Usare paglia bianca come base. Nessuna colpa.','Un albero di salice secco mette radici. Un uomo anziano prende una giovane moglie. Nulla che non sia vantaggioso.','La trave portante è arcuata. Sventura.','La trave portante è rinforzata. Fortuna. Se c\'è qualcos\'altro, umiliazione.','Un albero di salice secco porta fiori. Una donna anziana prende un giovane marito. Nessuna colpa. Nessuna lode.','Deve attraversare l\'acqua e l\'acqua gli copre la sommità della testa. Sventura. Nessuna colpa.'],
+'La preponderanza del grande chiede coraggio eccezionale. Chi affronta il momento critico da solo trova il passaggio.');
+
+h(29,'坎','L\'Abissale','The Abysmal',18,
+'L\'Abissale, ripetuto. Se sei sincero, hai successo nel cuore e l\'azione riesce.',
+'L\'acqua scorre continuamente e raggiunge la sua meta: immagine dell\'Abissale. Così l\'uomo superiore cammina nella costante virtù e pratica l\'affare di insegnare.',
+'L\'acqua non si ferma di fronte al pericolo ma fluisce attraverso ogni ostacolo, mantenendo la propria natura. Il pericolo ripetuto insegna come attraversarlo. La sincerità interiore è l\'ancora che permette di non essere travolti.',
+['L\'abisso ripetuto. Si cade nell\'abisso. Sventura.','L\'abisso ha pericolo. Si dovrebbe cercare di conseguire piccole cose soltanto.','Sia avanti sia dietro c\'è l\'abisso. In tale pericolo, fermarsi, cioè la sosta. Altrimenti si cade nell\'abisso. Non agire in questo modo.','Un boccale di vino, una ciotola di riso aggiunto, vasi di terracotta. Si riceve semplicemente attraverso la finestra. Alla fine nessuna colpa.','L\'abisso non è riempito fino all\'orlo, è riempito solo fino alla base del declivo. Nessuna colpa.','Legato con corde e funi, imprigionato tra spine e pruni. Per tre anni non trovare la via. Sventura.'],
+'L\'acqua scorre senza fermarsi: questo è il segreto dell\'abissale. La perseveranza sincera attraversa ogni pericolo.');
+
+h(30,'離','L\'Aderente','The Clinging',54,
+'L\'Aderente. La perseveranza porta vantaggio. Successo. Allevare una vacca porta fortuna.',
+'La luce si leva due volte: immagine dell\'Aderente. Così il grande uomo, continuando questo splendore, illumina le quattro regioni del mondo.',
+'Il fuoco aderisce al combustibile: la luce dipende da ciò a cui si attacca. Due tratti yang con yin nel mezzo — l\'occhio che vede la luce ma ha bisogno di oscurità nel centro. La chiarezza che dipende da qualcosa, che deve aderire per splendere.',
+['Le tracce dei piedi si incrociano. Se si è seri in proposito, nessuna colpa.','Luce gialla. Fortuna suprema.','Nella luce del sole che tramonta, gli uomini o battono il vaso di terracotta e cantano o si lamentano forte del sopraggiungere della vecchiaia. Sventura.','La sua venuta è improvvisa: fiamme, morte, abbandono.','Le lacrime scorrono come pioggia, i gemiti si moltiplicano. Fortuna.','Il re usa lui per fare una spedizione militare. Egli porta fortuna e prende il capo del nemico. Non è errore conquistare i suoi seguaci criminali.'],
+'La luce aderisce ciò che la nutre. Chi sa a cosa attaccarsi porta chiarezza al mondo.');
+
+h(31,'咸','L\'Influenza','Influence',28,
+'L\'Influenza. Successo. La perseveranza porta vantaggio. Prendere una fanciulla porta fortuna.',
+'Sul monte c\'è un lago: immagine dell\'Influenza. Così l\'uomo superiore con disponibilità riceve le persone.',
+'Il lago (gioia, yin) poggia sulla montagna (yang): la morbidezza sopra la forza. Il giovane yang attrae la giovane yin: influenza reciproca spontanea. Il cuore aperto e ricettivo è il principio di ogni relazione autentica.',
+['Il pollice del piede si muove.','Le vitella dello stinco si muovono.','Le cosce si muovono. Si tiene a ciò a cui ci si aggrappa. Andare avanti porta umiliazione.','Perseveranza porta fortuna. Il rimpianto scompare. Se i pensieri sono inquieti e irrequieti, solo gli amici seguiranno il tuo pensiero conscio.','Il dorso dell\'uomo si muove. Nessun rimpianto.','La mascella, le guance, la lingua si muovono.'],
+'L\'influenza vera nasce dall\'apertura del cuore. Chi riceve senza resistenza muove il mondo senza sforzo.');
+
+h(32,'恆','La Durata','Duration',13,
+'La Durata. Successo. Nessuna colpa. La perseveranza porta vantaggio. È utile avere dove andare.',
+'Tuono e vento: immagine della Durata. Così l\'uomo superiore sta saldo e non cambia la sua direzione.',
+'Tuono e vento si rinforzano a vicenda: movimento che si mantiene nel tempo. La durata non è rigidità ma fedeltà alla propria natura profonda. Come il fulmine e il vento che cambiano forma ma non sostanza.',
+['Cercare la durata troppo in profondità porta sventura. Nulla è vantaggioso.','Il rimpianto scompare.','Chi non dà durata al suo carattere incontra vergogna. Perseveranza porta umiliazione.','Nessuna selvaggina nel campo.','Dando durata al proprio carattere attraverso la perseveranza, fortuna per una donna, sventura per un uomo.','Agitazione come durata. Sventura.'],
+'La durata è fedeltà alla propria natura. Chi resta sé stesso attraverso ogni cambiamento conosce la vera forza.');
+
+h(33,'遯','La Ritirata','Retreat',60,
+'La Ritirata. Successo. Nella piccola perseveranza c\'è vantaggio.',
+'Sotto il cielo v\'è una montagna: immagine della Ritirata. Così l\'uomo superiore tiene a distanza il piccolo uomo, non con ira ma con riserbo.',
+'Due tratti yin avanzano dal basso, spingendo indietro i yang. Il momento chiede la ritirata strategica: non la fuga ma il ritiro consapevole che preserva la forza. Come l\'acqua che cede davanti alla roccia ma non si esaurisce.',
+['Nella coda della ritirata pericolo. Non si deve intraprendere nulla.','Egli lo tiene fermo con pelle di bue gialla. Nessuno può strappargliele.','Una ritirata trattenuta e pericolosa. Tenere servi e ancelle porta fortuna.','Ritirata volontaria porta fortuna per l\'uomo superiore, sventura per il piccolo uomo.','Ritirata graziosa. Perseveranza porta fortuna.','Ritirata piena. Nulla che non sia vantaggioso.'],
+'La ritirata strategica è saggezza, non debolezza. Chi sa quando ritirarsi preserva la forza per il momento giusto.');
+
+h(34,'大壯','La Forza del Grande','The Power of the Great',15,
+'La Forza del Grande. La perseveranza porta vantaggio.',
+'Il tuono è in alto nel cielo: immagine della Forza del Grande. Così l\'uomo superiore non calpesta sentieri che non sono conformi all\'ordine stabilito.',
+'Quattro tratti yang avanzano con forza: il grande è potente. Ma la forza senza saggezza diventa caparbietà. Il capro che dà cornate alla siepe rimane impigliato. La vera forza sa quando avanzare e quando fermarsi.',
+['La forza è nelle dita dei piedi. Avanzare porta sventura. Ciò che è affidabile.','Perseveranza porta fortuna.','L\'uomo inferiore lavora attraverso la forza. L\'uomo superiore non agisce così. Continuare è pericoloso. Un capro dà cornate a una siepe e si impiglia con le sue corna.','Perseveranza porta fortuna. Il rimpianto scompare. La siepe si apre; non vi è più impiglio. La forza è nel mozzo di una ruota grande.','Perdere il capro con facilità. Nessun rimpianto.','Un capro dà cornate a una siepe. Non può andare avanti, non può andare indietro. Nulla è vantaggioso, ma se si soffre di questo, fortuna.'],
+'La grande forza si esprime nella giustizia. Chi sa usare la propria potenza con saggezza non trova ostacoli.');
+
+h(35,'晉','Il Progresso','Progress',48,
+'Il Progresso. Il potente principe è onorato con cavalli in grande numero. Nel corso di un solo giorno egli è ricevuto tre volte.',
+'Il sole sorge sulla terra: immagine del Progresso. Così l\'uomo superiore da sé stesso rischiara la sua splendida virtù.',
+'Il sole si innalza sopra la terra: chiarezza che avanza, progresso verso la luce. Il principe riceve riconoscimento a corte — il momento favorevole è arrivato. La virtù splende e viene riconosciuta senza bisogno di imporsi.',
+['Progredire ma essere rifiutati. Perseveranza porta fortuna. Se non si trova fiducia, rimanere calmo porta nessuna colpa.','Progredire ma in tristezza. Perseveranza porta fortuna. Si riceve grande felicità dalla nonna.','Tutti consentono. Il rimpianto scompare.','Il progresso è come un topo. Perseveranza porta pericolo.','Il rimpianto scompare. Non curarsi di perdita o guadagno. Avanzare porta fortuna. Nulla che non porti vantaggio.','Avanzare con le corna soltanto a scopo di punire la propria città. Essere consapevoli del pericolo porta fortuna. Nessuna colpa. La perseveranza porta umiliazione.'],
+'Il progresso come il sole che sale: naturale, costante, irresistibile. La virtù riconosciuta illumina il mondo.');
+
+h(36,'明夷','L\'Oscuramento della Luce','Darkening of the Light',6,
+'L\'Oscuramento della Luce. Nella difficoltà è utile la perseveranza.',
+'La luce si immerge nella terra: immagine dell\'Oscuramento della Luce. Così l\'uomo superiore, mentre vive tra la moltitudine, vela la propria luce eppure risplende.',
+'Il sole si immerge nella terra: il principe saggio serve il tiranno oscuro, nascondendo la propria luce per sopravvivere senza compromettersi. Intelligenza interiore che non si arrende, anche quando deve celarsi.',
+['L\'oscuramento della luce durante il volo. Abbassa le sue ali. L\'uomo superiore nel suo vagabondare, per tre giorni non mangia. Egli ha da andare. Il padrone di casa ha occasione di parlare di lui.','L\'oscuramento della luce ferito alla coscia sinistra. Usa la forza di un cavallo nel salvarsi. Fortuna.','L\'oscuramento della luce durante la caccia del sud. Si ottiene il loro grande capo. Non si deve aspettarsi una perseveranza troppo veloce.','Egli penetra nel lato sinistro del ventre. Si raggiunge il cuore dell\'oscuramento della luce. Si abbandona il cortile e la porta.','Oscuramento della luce come con il principe Chi. La perseveranza porta vantaggio.','Oscuramento senza luce. Prima saliva al cielo, ora si tuffa nella terra.'],
+'La luce nascosta non si spegne. Chi sa velare la propria intelligenza nei tempi bui la preserva per il futuro.');
+
+h(37,'家人','La Famiglia','The Family',46,
+'La Famiglia. La perseveranza della donna porta vantaggio.',
+'Il vento sorge dal fuoco: immagine della Famiglia. Così l\'uomo superiore ha sostanza nelle sue parole e durata nella sua condotta.',
+'Il fuoco riscalda la casa, il vento porta le parole verso l\'esterno: la famiglia è il luogo dove si formano i caratteri. Ognuno ha il suo ruolo; le relazioni chiare creano armonia. La donna persevera nell\'interno, l\'uomo nell\'esterno.',
+['Ferma la famiglia chiudendo la porta. Il rimpianto scompare.','Ella non deve seguire i suoi capricci. Deve dedicarsi al cibo nel mezzo. Perseveranza porta fortuna.','Quando le membra della famiglia litigano troppo, viene troppo tardi il rimpianto. Ma quando donna e bambini si mettono a ridacchiare e scherzare, alla fine viene l\'umiliazione.','È la colonna portante della famiglia. Grande fortuna.','Il re si avvicina alla sua famiglia. Non preoccuparsi. Fortuna.','Il suo lavoro ispira rispetto. Alla fine fortuna.'],
+'La famiglia è la prima scuola di ogni virtù. Chi porta ordine e calore nella propria casa porta ordine nel mondo.');
+
+h(38,'睽','L\'Opposizione','Opposition',51,
+'L\'Opposizione. Nelle piccole cose fortuna.',
+'Sopra il fuoco v\'è l\'acqua: immagine dell\'Opposizione. Così l\'uomo superiore mantiene la propria individualità nonostante l\'accordo con gli altri.',
+'Fuoco e acqua si muovono in direzioni opposte. L\'opposizione non è il contrario dell\'armonia ma la sua forma dinamica. Due individui completi possono incontrarsi nelle piccole cose senza fondersi: rispetto della differenza.',
+['Il rimpianto scompare. Hai perso il tuo cavallo; non corrergli dietro, ritornerà da solo. Vedi persone malvagie, guarda di non fare errori.','Incontra il suo signore in una stradina stretta. Nessuna colpa.','Vede il carro trascinato indietro, i buoi trattenuti, il suo capello e naso tagliato. Non un inizio buono, ma un buon fine.','Isolato attraverso l\'opposizione. Si incontra un uomo di qualità. Ci si mescola in fiducia. Pericolo ma nessuna colpa.','Il rimpianto scompare. Il compagno si fa largo tra le pelli. Andare in avanti, qual colpa?','Isolato attraverso l\'opposizione. Vede un maiale coperto di fango e un carro pieno di diavoli. Prima si tende l\'arco, poi lo si abbassa. Non è un rapinatore, corteggerà al momento giusto. Andando avanti, si incontra la pioggia. Poi la fortuna.'],
+'Nell\'opposizione si preserva l\'individualità. I contrari si completano; la differenza è fonte di vita.');
+
+h(39,'蹇','L\'Ostacolo','Obstruction',20,
+'L\'Ostacolo. Il sudovest porta vantaggio. Il nordest non porta vantaggio. È utile vedere il grande uomo. La perseveranza porta fortuna.',
+'Acqua sulla montagna: immagine dell\'Ostacolo. Così l\'uomo superiore si volge verso sé stesso e modella il suo carattere.',
+'L\'acqua incontra la montagna: il cammino è bloccato. Di fronte all\'ostacolo si guarda dentro sé stessi: quali forze interiori aiutano? La difficoltà esteriore diventa occasione di rafforzamento interiore.',
+['Andando avanti si trovano ostacoli; venendo indietro, lode.','Il servitore del re incontra ostacolo su ostacolo, ma non è per sua colpa propria.','Andando avanti si trovano ostacoli; perciò si ritorna.','Andando avanti si trovano ostacoli; venendo indietro, collegamento.','Nel mezzo dei grandi ostacoli, vengono gli amici.','Andando avanti si trovano ostacoli; venendo indietro, grande fortuna. È utile vedere il grande uomo.'],
+'L\'ostacolo è il maestro più severo. Chi si volge dentro sé stesso di fronte alla difficoltà trova la via attraverso.');
+
+h(40,'解','La Liberazione','Deliverance',10,
+'La Liberazione. Il sudovest porta vantaggio. Se non c\'è più nessun luogo da andare, ritornare porta fortuna. Se c\'è un luogo dove andare, partire presto porta fortuna.',
+'Tuono e pioggia si levano: immagine della Liberazione. Così l\'uomo superiore perdona gli errori e tratta i peccati con clemenza.',
+'Il tuono e la pioggia liberano la tensione accumulata: il nodo si scioglie. Dopo ogni ostacolo il momento della liberazione. Come dopo il temporale l\'aria è pulita, l\'azione deve essere immediata e decisa per cogliere il momento.',
+['Nessuna colpa.','Si uccidono tre volpi nel campo e si ottiene una freccia gialla. La perseveranza porta fortuna.','Se uno porta carichi sul dorso e allo stesso tempo viaggia in carrozza, invita il brigante ad avanzare. La perseveranza porta umiliazione.','Libera il tuo pollice grande del piede. Poi il compagno viene e ci si fida di lui.','Se soltanto l\'uomo superiore può liberarsi, fortuna. Esso dà fiducia anche alle persone volgari.','Il principe spara ad un falco sulla alte mura. Egli lo colpisce. Nulla che non sia vantaggioso.'],
+'La liberazione è il respiro dopo la tensione. Chi coglie il momento della liberazione porta nuova vita al mondo.');
+
+h(41,'損','La Diminuzione','Decrease',35,
+'La Diminuzione combinata con la verità porta suprema fortuna senza colpa. Si può essere perseveranti; è utile avere dove andare. Come usarla? Anche due piccole ciotole sono adatte per l\'offerta.',
+'In basso alla montagna v\'è un lago: immagine della Diminuzione. Così l\'uomo superiore controlla la sua collera e frena i suoi impulsi.',
+'Il lago erode la base della montagna — quello che diminuisce in basso incrementa in alto. La diminuzione autentica è sacrificio volontario che porta a una forma più alta. Rinunciare al superfluo per rafforzare l\'essenziale.',
+['Mettendo da parte i propri affari, andare velocemente da lui e non sbagliare. Quanto si può diminuire?','La perseveranza porta vantaggio. Espedire porta sventura. Senza diminuire sé stessi, si può incrementare gli altri.','Quando tre camminano insieme, si diminuisce di uno. Quando uno cammina, trova il suo compagno.','Diminuire le proprie imperfezioni. Fa sì che l\'altro venga presto e ci sarà gioia. Nessuna colpa.','Qualcuno l\'accresce. Dieci coppie di tartarughe non possono contraddire questo. Fortuna suprema.','Se si è incrementati senza diminuire gli altri, nessuna colpa. Perseveranza porta fortuna. È utile avere dove andare. Si ottengono servi ma non più casa propria.'],
+'La diminuzione giusta è il fondamento dell\'incremento. Chi sacrifica il superfluo si prepara alla pienezza.');
+
+h(42,'益','L\'Incremento','Increase',41,
+'L\'Incremento. È utile avere dove andare. È utile attraversare le grandi acque.',
+'Vento e tuono: immagine dell\'Incremento. Così l\'uomo superiore, se vede il bene, lo imita; se ha delle mancanze, le elimina.',
+'Vento e tuono si rafforzano reciprocamente: incremento per imitazione reciproca. Il momento favorevole richiede azione rapida. Come il vento e il tuono: ciò che aiuta uno aiuta l\'altro.',
+['È vantaggioso impiegarlo nelle grandi azioni. Fortuna suprema. Nessuna colpa.','Qualcuno l\'accresce. Dieci coppie di tartarughe non possono contraddire questo. Perseveranza duratura porta fortuna. Il re lo presenta davanti a Dio. Fortuna.','Si è incrementati mediante eventi sventurati. Nessuna colpa, se sei veritiero e cammini nel mezzo, e informs al principe usando il sigillo.','Se tu cammini nel mezzo e informi il principe, egli lo seguirà. È vantaggioso essere impiegato nel trasferimento della capitale.','Se hai veramente un cuore gentile, non chiedere. Fortuna suprema. Veramente, la bontà del tuo cuore verrà riconosciuta.','Nessuno l\'accresce. Qualcuno lo colpisce. Non mantiene stabilmente il suo cuore. Sventura.'],
+'L\'incremento vero porta beneficio a tutti. Chi sa moltiplicare la ricchezza condividendola trova la vera abbondanza.');
+
+h(43,'夬','La Decisione','Breakthrough',31,
+'La Decisione. Uno deve annunciare risolutamente alla corte del re. Deve essere annunciato veridicamente. Il pericolo. È necessario notificare la propria città. Non è utile armarsi immediatamente. È utile avere dove andare.',
+'Il lago è salito fino al cielo: immagine della Decisione. Così l\'uomo superiore dispensa le ricchezze verso il basso e si astiene dal risiedere nella virtù.',
+'Un solo tratto yin in cima che resiste a cinque yang: il momento della decisione è venuto. L\'oscurità deve essere eliminata con chiarezza, non con la violenza solitaria. La decisione richiede annuncio pubblico e fermezza nel cuore.',
+['Potente nelle dita dei piedi anteriori. Andare prima che si sia in grado porta sventura.','Allerta e grido. Armi nel cuore della notte. Non temere.','Essere potente nelle mascelle produce sventura. L\'uomo superiore è risoluto. Cammina solo e incontra la pioggia. È cosparso come se fosse bagnato. C\'è indignazione ma nessuna colpa.','Il sedere non ha pelle e il camminare è difficile. Se uno si lasciasse guidare come una pecora, il rimpianto svanirebbe. Ma se queste parole fossero sentite, non si crederebbe loro.','Amaranto di steppa eliminato risolutamente. Camminare nel mezzo porta nessuna colpa.','Nessun grido. Alla fine sventura.'],
+'La decisione richiede chiarezza e coraggio. Chi affronta l\'oscurità alla luce del giorno la dissolve senza violenza.');
+
+h(44,'姤','Il Venir Incontro','Coming to Meet',61,
+'Il Venir Incontro. La donna è potente. Non si deve sposare una tale donna.',
+'Sotto il cielo v\'è il vento: immagine del Venir Incontro. Così il sovrano, nel disporre i suoi comandi, li annuncia alle quattro regioni del cielo.',
+'Un solo tratto yin appare in basso, incontrando cinque yang: il principio femminile si insinua, il potere seduttivo dell\'istante. Il momento del venir incontro è inaspettato. Come il vento sotto il cielo che raggiunge tutto, l\'incontro avviene ovunque.',
+['Deve essere trattenuto con un freno di bronzo. La perseveranza porta fortuna. Se uno gli permette di seguire il suo corso, si vedrà sventura. Un maiale magro è ancora salvo.','C\'è un pesce nell\'involucro. Nessuna colpa. Non è vantaggioso per gli ospiti.','Il sedere non ha pelle e il camminare è difficile. Se uno è consapevole del pericolo, non commette grandi errori.','Nessun pesce nell\'involucro. Questo porta sventura.','Un albero di melone avvolto in foglie di salice. Linee nascoste. Poi cade qualcosa dal cielo.','Viene incontro con le sue corna. Umiliazione. Nessuna colpa.'],
+'L\'incontro inaspettato porta sia dono che pericolo. La saggezza discerne ciò che viene incontro e sa quando accogliere e quando resistere.');
+
+h(45,'萃','La Raccolta','Gathering Together',24,
+'La Raccolta. Successo. Il re si avvicina al suo tempio. È utile vedere il grande uomo. Questo porta successo. La perseveranza porta vantaggio. Offrire grandi sacrifici porta fortuna. È utile avere dove andare.',
+'Sopra la terra v\'è un lago: immagine della Raccolta. Così l\'uomo superiore rinnova le sue armi per far fronte all\'imprevisto.',
+'Il lago si raccoglie sopra la terra: energia che si concentra. La raccolta attorno a un centro — il re, il rito — crea coesione. Ma l\'energia raccolta può anche sorgere come minaccia: prepararsi all\'imprevisto è necessario.',
+['Se sei sincero ma non permanente, ora c\'è confusione ora raccolta. Se chiami, dopo una stretta di mano verrà la risata. Non temere. Andare avanti è senza colpa.','Lasciarsi portare porta fortuna e rimane senza colpa. Se si è sinceri, è vantaggioso offrire anche il piccolo sacrificio del tramonto.','Raccogliersi nella tristezza; nulla di favorevole. Andare avanti è senza colpa. Leggera umiliazione.','Grande fortuna. Nessuna colpa.','Se uno ha posizione, nessuna colpa. Se qualcuno non ha ancora fiducia in te, è necessaria perseveranza suprema ed eterna. Poi il rimpianto scompare.','Sospiri, lacrime, moccio. Nessuna colpa.'],
+'La raccolta attorno a un centro crea forza. Chi riunisce gli animi nell\'autenticità porta a compimento imprese durevoli.');
+
+h(46,'升','L\'Ascesa','Pushing Upward',5,
+'L\'Ascesa. Supremo successo. Si deve vedere il grande uomo. Non temere. Partire verso il sud porta fortuna.',
+'Nel mezzo della terra cresce il legno: immagine dell\'Ascesa. Così l\'uomo superiore di cuore pieghevole accumula piccole cose per raggiungere qualcosa di alto e grande.',
+'Il legno cresce dalla terra verso l\'alto: ascesa naturale, progressiva, senza fretta. Come l\'albero che cresce lentamente ma inesorabilmente, l\'ascesa vera è il risultato dell\'accumulo paziente di piccole virtù.',
+['L\'ascesa che incontra la fiducia. Grande fortuna.','Se uno è sincero, è vantaggioso presentare anche piccole offerte. Nessuna colpa.','Si ascende in una città vuota.','Il re offre su monte Chi. Fortuna. Nessuna colpa.','La perseveranza porta fortuna. Si ascende per gradini.','Ascendendo nel buio. È vantaggioso essere instancabilmente perseveranti.'],
+'L\'ascesa graduale vince la vetta. Chi accumula piccole virtù costruisce la grande altezza.');
+
+h(47,'困','L\'Esaurimento','Oppression',26,
+'L\'Esaurimento. Successo. Perseveranza. Il grande uomo porta fortuna. Nessuna colpa. Quando si ha qualcosa da dire, non si è creduti.',
+'Non v\'è acqua nel lago: immagine dell\'Esaurimento. Così l\'uomo superiore mette la sua vita in gioco per seguire la sua volontà.',
+'Il lago è vuoto, privo di acqua: la fonte si è esaurita. Ma l\'esaurimento non è la fine: è la prova che rivela chi si è davvero. Il grande uomo mantiene la sua gioia interiore anche nell\'oppressione esterna.',
+['Si siede sotto un albero spoglio e va a stare in una valle buia. Per tre anni non vede nulla.','Si è esauriti mentre si beve e si mangia. Poi arriva l\'uomo con la cintura scarlatta. È vantaggioso offrire sacrifici. Muoversi porta sventura. Nessuna colpa.','L\'uomo si lascia esaurire da sassi e s\'appoggia a cespugli di rovi. Entra nel suo palazzo, ma non vede sua moglie. Sventura.','Viene molto lentamente, esaurito in un carro dorato. Umiliazione, ma c\'è una fine.','Il suo naso e i suoi piedi sono tagliati. Esaurito dall\'uomo con la cintura porpora. Gioia giunge lentamente. È vantaggioso offrire sacrifici e libagioni.','È esaurito da piante rampicanti. Si muove incerto e dice: "Il movimento porta rimpianto." Se si ha rimpianto per questo e ci si muove, fortuna.'],
+'Nell\'esaurimento si scopre chi si è. Chi mantiene la gioia interiore nella prova trova la via attraverso ogni oppressione.');
+
+h(48,'井','Il Pozzo','The Well',21,
+'Il Pozzo. La città può essere cambiata, ma il pozzo non può essere cambiato. Non va né si perde. Ma se prima che la corda del secchio raggiunga l\'acqua, e si rompe il vaso, porta sventura.',
+'Sopra l\'acqua v\'è il legno: immagine del Pozzo. Così l\'uomo superiore incoraggia il popolo nel suo lavoro e lo esorta ad aiutarsi a vicenda.',
+'Il pozzo: centro immutabile che nutre la comunità generazione dopo generazione. La città cambia, le persone cambiano, ma il pozzo rimane. Come la virtù profonda dell\'uomo superiore: fonte inesauribile a disposizione di tutti.',
+['Il fango del pozzo non si beve. Nessun animale viene a un pozzo antico.','Alla profondità del pozzo si spara al pesce. Il vaso è rotto e perde.','Il pozzo è stato sgomberato, ma non lo si usa. Questo è il mio cruccio. Si può bere da esso. Se il re fosse illuminato, si riceverebbe la sua benedizione.','Il pozzo è rivestito di mattoni. Nessuna colpa.','Nel pozzo vi è una chiara sorgente, fresca da bere.','Il pozzo è liberamente accessibile a tutti. È affidabile. Fortuna suprema.'],
+'Il pozzo nutre senza esaurirsi. La virtù profonda è la fonte che disseta generazione dopo generazione.');
+
+h(49,'革','La Rivoluzione','Revolution',30,
+'La Rivoluzione. Il tuo proprio giorno, allora si crede. Supremo successo. La perseveranza porta vantaggio. Il rimpianto scompare.',
+'Fuoco nel lago: immagine della Rivoluzione. Così l\'uomo superiore regola il calendario e chiarisce le stagioni.',
+'Il fuoco è sotto il lago: la luce che brucia nell\'acqua. Il cambiamento radicale è giustificato solo quando il vecchio ordine è veramente esaurito. La rivoluzione genuina porta l\'ordine naturale delle stagioni, non il caos.',
+['Si è avvolti nella pelle di una vacca gialla.','Il proprio giorno, allora ci si può rivoluzionare. Avanzare porta fortuna. Nessuna colpa.','Avanzare porta sventura. La perseveranza porta pericolo. Quando le parole sulla rivoluzione hanno circolato tre volte, ci si può fidare. Allora ci sarà fiducia.','Il rimpianto scompare. Si crede. Cambiare l\'ordine politico porta fortuna.','Il grande uomo cambia come una tigre. Anche prima di consultare l\'oracolo, si deve credere.','L\'uomo superiore cambia come un leopardo. L\'uomo inferiore si rivoluziona nella faccia. Avanzare porta sventura. Restare perseveranti porta fortuna.'],
+'La rivoluzione vera segue il ritmo delle stagioni. Chi cambia al momento giusto porta il rinnovamento senza distruzione.');
+
+h(50,'鼎','Il Crogiolo','The Caldron',53,
+'Il Crogiolo. Fortuna suprema. Successo.',
+'Sopra il legno v\'è il fuoco: immagine del Crogiolo. Così l\'uomo superiore consolida il suo destino mantenendo la sua posizione giusta.',
+'Il crogiolo: il vaso sacro della trasformazione. Il legno nutre il fuoco, il fuoco trasforma la materia in cibo spirituale. Come il crogiolo trasforma gli ingredienti in nutrimento, l\'uomo superiore trasforma la propria esperienza in saggezza.',
+['Un crogiolo con le gambe rivolte verso l\'alto. Favorevole per la rimozione di materia stagnante. Si prende una concubina per amore del figlio. Nessuna colpa.','C\'è del cibo nel crogiolo. I miei compagni hanno l\'invidia, ma non possono toccarmi. Fortuna.','Le orecchie del crogiolo sono cambiate. Il modo di avanzare è impedito. Il grasso del faisane non viene mangiato. Quando cade la pioggia, il rimpianto finisce. Fine fortunato.','Le gambe del crogiolo si spezzano. Il cibo del principe viene rovesciato e la sua persona è imbrattata. Sventura.','Il crogiolo ha orecchie gialle, maniglie d\'oro. La perseveranza porta vantaggio.','Il crogiolo ha maniglie di giada. Grande fortuna. Nulla che non sia vantaggioso.'],
+'Il crogiolo sacro trasforma la materia in spirito. Chi porta l\'esperienza alla saggezza nutre il mondo.');
+
+h(51,'震','Il Risveglio','The Arousing',9,
+'Il Risveglio porta successo. Il risveglio arriva — oh! oh! Parole ridenti — ha ha! Il colpo del tuono spaventa per cento miglia, e lui non lascia cadere il cucchiaio e il calice sacrificale.',
+'Il tuono risuona: immagine del Risveglio. Così l\'uomo superiore, in timore e tremore, rettifica la sua vita ed esamina sé stesso.',
+'Il tuono colpisce due volte: choc su choc. Il terrore del tuono scuote l\'anima, ma chi è interiormente stabile non lascia cadere nemmeno il calice del rito. Lo shock non distrugge, purifica. Chi non si perde nello spavento emerge più forte.',
+['Il risveglio arriva — oh! oh! Poi arriva la risata — ha ha! Fortuna.','Il risveglio arriva nel pericolo. Centinaia di migliaia di monete d\'oro si perdono e si deve salire le sette colline. Non correre dietro di esse. Dopo sette giorni le si ottiene di nuovo.','Il risveglio viene e rende incapace. Se il risveglio ti incita ad agire, non vi è colpa.','Il risveglio impantana.','Il risveglio va e viene pericolo. Ma non si perde nulla, e ci sono cose da fare.','Il risveglio porta sventura, terrore e tremore. Avanzare porta sventura. Se non ha colpito il proprio corpo ma il vicino, non vi è colpa. I propri compagni hanno occasione di parlare.'],
+'Il tuono sveglia il mondo. Chi porta la propria anima nella quiete mentre tutto trema ha trovato il centro.');
+
+h(52,'艮','Il Quieto','Keeping Still',36,
+'Il Quieto. Il suo dorso si mantiene ancora così che non sente più il suo corpo. Cammina nel suo cortile e non vede il suo uomo. Nessuna colpa.',
+'I monti si succedono: immagine del Quieto. Così l\'uomo superiore non lascia i suoi pensieri andare oltre la sua situazione.',
+'La montagna: quiete assoluta, fermezza. Non il dorso che si volta via dalla vita, ma la quiete che permette di vedere chiaramente. La meditazione vera svuota il pensiero: non si vede l\'oggetto ma si è presenti senza oggetto.',
+['Tenere fermo le dita dei piedi. Nessuna colpa. La perseveranza duratura porta vantaggio.','Tenere fermo le gambe dello stinco. Non si può salvare chi si segue. Il suo cuore non è lieto.','Tenere fermo i fianchi. Rendere rigida la spina. Pericolo. Il cuore si soffoca.','Tenere fermo il torso. Nessuna colpa.','Tenere fermo le mascelle. Le parole hanno ordine. Il rimpianto scompare.','Quieta perseveranza. Fortuna.'],
+'La quiete vera è il centro immobile in mezzo al movimento. Chi sa fermarsi conosce il cuore di ogni cosa.');
+
+h(53,'漸','Lo Sviluppo Graduale','Development',44,
+'Lo Sviluppo Graduale. La fanciulla viene data in sposa. Fortuna. La perseveranza porta vantaggio.',
+'Sul monte c\'è un albero: immagine dello Sviluppo Graduale. Così l\'uomo superiore risiede nella dignità e nella virtù in modo da migliorare i costumi.',
+'L\'albero sulla montagna cresce lentamente ma solidamente. Il matrimonio si prepara con cerimonia: nessun passo affrettato. Lo sviluppo graduale è l\'unico che porta a radici profonde e a frutti duraturi.',
+['L\'oca selvatica si avvicina gradualmente alla riva. Il giovane figlio è in pericolo. C\'è qualcosa da dire. Nessuna colpa.','L\'oca selvatica si avvicina gradualmente alla roccia piatta. Mangiare e bere in pace e concordia. Fortuna.','L\'oca selvatica si avvicina gradualmente alla terraferma asciutta. L\'uomo va e non fa ritorno. La donna porta un bambino ma non lo nutre. Sventura. È vantaggioso tenere lontano i briganti.','L\'oca selvatica si avvicina gradualmente agli alberi. Forse troverà un ramo piatto. Nessuna colpa.','L\'oca selvatica si avvicina gradualmente alla sommità. Per tre anni la donna non ha un bambino. Alla fine nulla può impedirle di averne. Fortuna.','L\'oca selvatica si avvicina gradualmente alle nuvole di vetta. Le sue piume possono essere usate per le danze sacre. Fortuna.'],
+'Lo sviluppo graduale porta radici profonde. Chi non forza la crescita raccoglie frutti duraturi.');
+
+h(54,'歸妹','La Fanciulla Nubile','The Marrying Maiden',11,
+'La Fanciulla Nubile. Avanzare porta sventura. Nulla che sia vantaggioso.',
+'Sopra al lago c\'è il tuono: immagine della Fanciulla Nubile. Così l\'uomo superiore comprende il transitorio nell\'eternità del fine.',
+'Il tuono scuote il lago: il movimento maschile eccita il femminile. La fanciulla concubina deve accontentarsi di una posizione subordinata. Le relazioni forzate o premature portano sventura. La gioia deve aspettare il momento giusto.',
+['La fanciulla nubile viene come concubina. Lo zoppo può camminare. Avanzare porta fortuna.','Il cieco può vedere. È vantaggioso per una persona solitaria restare perseverante.','La fanciulla nubile viene come schiava. Essa torna e viene data come concubina.','La fanciulla nubile prolunga il termine. Una nuzialità tardiva arriva al suo tempo.','Il sovrano I dà sua figlia in sposa. Le maniche ricamate della principessa non erano così belle come quelle delle sue ancelle. La luna è quasi piena. Fortuna.','La donna regge un paniere, ma non ci sono frutti in esso. L\'uomo strozza una pecora, ma nessun sangue scorre. Nulla è vantaggioso.'],
+'La fanciulla che aspetta il momento giusto conosce la saggezza del tempo. Il fiore che sboccia fuori stagione non porta frutto.');
+
+h(55,'豐','L\'Abbondanza','Abundance',14,
+'L\'Abbondanza. Successo. Il re la raggiunge. Non si affligga. Sii come il sole a mezzogiorno.',
+'Tuono e fulmine vengono entrambi: immagine dell\'Abbondanza. Così l\'uomo superiore decide i processi e esegue i castighi.',
+'Il fulmine (chiarezza) e il tuono (movimento) insieme al massimo: il culmine dell\'abbondanza. Come il sole a mezzogiorno: il massimo fulgore dura solo un istante. Il momento va colto pienamente, sapendo che verrà il declino.',
+['Quando incontra il suo sovrano di pari, si può star insieme per dieci giorni senza colpa. Avanzare ottiene riconoscimento.','L\'abbondanza è così grande che già la stella polare può essere vista a mezzogiorno. Andando avanti si guadagna la sfiducia e l\'odio. Se si risveglia la fiducia attraverso la verità, la fortuna verrà.','L\'abbondanza è così grande che già piccole stelle possono essere viste a mezzogiorno. Egli si frattura il suo braccio destro. Nessuna colpa.','L\'abbondanza è così grande che già la stella polare può essere vista a mezzogiorno. Incontra il suo sovrano di pari. Fortuna.','Arriva chi ha benedizioni e fama. Fortuna.','La sua casa è abbondante. Egli cela la sua famiglia. Sbircia dalla porta e non vede nessuno. Per tre anni non vede nulla. Sventura.'],
+'L\'abbondanza è il sole a mezzogiorno: massimo splendore nell\'istante che passa. Chi la coglie piena porta luce al mondo.');
+
+h(56,'旅','Il Viandante','The Wanderer',52,
+'Il Viandante. Successo attraverso la piccola perseveranza. La perseveranza porta fortuna al viandante.',
+'Fuoco sopra la montagna: immagine del Viandante. Così l\'uomo superiore con saggezza e cautela applica le penalità e non continua le cause.',
+'Il fuoco brucia sulla montagna e poi continua oltre: il viandante non ha casa fissa. La condizione del viandante richiede umiltà e adattabilità. Chi si trova in terra straniera deve essere discreto, non imporre la propria personalità.',
+['Se il viandante si occupa di cose banali, si attira la sventura.','Il viandante arriva all\'osteria. Porta i suoi averi con sé. Ottiene la costanza di un giovane servo.','L\'osteria del viandante brucia. Perde la costanza del suo giovane servo. Pericolo.','Il viandante riposa in un luogo sicuro. Ottiene una proprietà e un\'ascia. Il mio cuore non è lieto.','Egli spara a un fagiano. Perderà la freccia con il primo colpo. Alla fine riceve lode e una posizione.','L\'uccello brucia il suo nido. Il viandante prima ride poi si lamenta. Perde una vacca nella facilità. Sventura.'],
+'Il viandante impara il rispetto attraverso l\'estraneità. Chi cammina come ospite del mondo porta la saggezza di ogni luogo.');
+
+h(57,'巽','Il Penetrante','The Gentle',45,
+'Il Penetrante. Successo attraverso ciò che è piccolo. È utile avere dove andare. È utile vedere il grande uomo.',
+'I venti che si seguono: immagine del Penetrante. Così l\'uomo superiore diffonde i suoi comandi e porta avanti i suoi affari.',
+'Il vento che continua: non urta ma penetra attraverso ogni fessura. L\'influenza gentile e persistente è più efficace della forza. Come il vento che fa crescere le piante senza smuovere le radici, l\'azione gentile modifica senza distruggere.',
+['Nel far avanzare e retrocedere, la perseveranza di un soldato porta vantaggio.','Il penetrante sotto un letto. Utenti di sacerdoti e maghi in grande numero. Fortuna. Nessuna colpa.','Il penetrante ripetuto porta umiliazione.','Il rimpianto scompare. In caccia si prendono tre specie di selvaggina.','Perseveranza porta fortuna. Il rimpianto scompare. Nulla che non sia vantaggioso. Nessun inizio, ma una fine. Prima di cambiare, tre giorni; dopo il cambiamento, tre giorni. Fortuna.','Il penetrante sotto un letto. Perde la sua proprietà e la sua ascia. La perseveranza porta sventura.'],
+'Il vento penetra senza urto. La gentilezza persistente modifica il mondo più in profondità di ogni forza.');
+
+h(58,'兌','Il Sereno','The Joyous',27,
+'Il Sereno. Successo. La perseveranza porta vantaggio.',
+'Laghi che si poggiano l\'uno sull\'altro: immagine del Sereno. Così l\'uomo superiore si unisce con i suoi amici per la discussione e la pratica.',
+'Due laghi comunicanti: la gioia si moltiplica quando è condivisa. La gioia vera non è indulgenza superficiale ma apertura del cuore che porta gli esseri verso la luce. Come l\'acqua naturalmente scorre verso il basso portando vita.',
+['Serenità armoniosa. Fortuna.','Serenità sincera. Fortuna. Il rimpianto scompare.','Serenità che viene. Sventura.','Serenità non ancora in pace. Dopo il riposo dalla malattia, c\'è gioia.','Fiducia nel decadimento è pericolosa.','La serenità seduttiva.'],
+'La gioia vera è il lago che rispecchia il cielo. Chi porta serenità autentica fa crescere ciò che tocca.');
+
+h(59,'渙','La Dissoluzione','Dispersion',42,
+'La Dissoluzione. Successo. Il re si avvicina al suo tempio. È utile attraversare le grandi acque. La perseveranza porta vantaggio.',
+'Il vento spira sopra l\'acqua: immagine della Dissoluzione. Così i re antichi offrivano sacrifici al Signore e costruivano templi.',
+'Il vento disperde le acque: le forze separate si dissolvono nell\'unità. Come il rito sacro che dissolve l\'egoismo individuale in un tutto comune, la dissoluzione degli ostacoli porta alla comunione.',
+['Porta aiuto con la forza di un cavallo. Fortuna.','La dissoluzione porta via la sua base. Il rimpianto scompare.','Dissolve il suo corpo. Nessun rimpianto.','Dissolve la sua massa. Fortuna suprema. La dissoluzione porta cumuli che formano collina ordinaria. Questo non è ciò che si pensa in ordinario.','Le sue grida di dissoluzione come sudore sono come il grido di un re. Dissolve il sovrano dalla malattia. Fortuna.','Dissolve il sangue. Andare da lontano porta nessuna colpa.'],
+'La dissoluzione libera le energie bloccate. Come il vento disperde la nebbia, la resa porta la visione chiara.');
+
+h(60,'節','La Limitazione','Limitation',19,
+'La Limitazione. Successo. La limitazione dolorosa non deve essere resa permanente.',
+'Sopra l\'acqua v\'è il lago: immagine della Limitazione. Così l\'uomo superiore crea il numero e misura e discute virtù e condotta giuste.',
+'Il lago è contenuto dai suoi argini: la forma che dà significato al contenuto. Senza limitazione, l\'acqua si disperde inutile. Il limite non è oppressione ma struttura che permette la vita. Anche le stagioni e il cielo hanno le loro misure.',
+['Non uscire dalla porta e dal cortile. Nessuna colpa.','Non uscire dal portone e dalla porta. Sventura.','Chi non sa limitarsi piangerà. Nessuna colpa.','Limitazione naturale e tranquilla. Successo.','Limitazione dolce. Fortuna. Avanzare porta lode.','Limitazione dolorosa. La perseveranza porta sventura. Il rimpianto scompare.'],
+'La limitazione saggia crea la forma della vita. Chi accetta i propri confini trova la libertà all\'interno di essi.');
+
+h(61,'中孚','La Verità Interiore','Inner Truth',43,
+'La Verità Interiore. Maiali e pesci. Fortuna. È utile attraversare le grandi acque. La perseveranza porta vantaggio.',
+'Sopra al lago v\'è il vento: immagine della Verità Interiore. Così l\'uomo superiore discute le cause criminali al fine di ritardare le esecuzioni.',
+'Il vento sul lago fa vibrare la superficie — la verità interiore risuona verso l\'esterno. Come il vento muove l\'acqua senza toccarla fisicamente, la verità autentica muove gli altri senza coercizione.',
+['Essere pronto porta fortuna. Se c\'è un altro, lui non è tranquillo.','Un gallo grida nel notte. Fortuna.','Ora porta la guerra, ora si ferma, ora piange, ora canta.','La luna è vicina alla piena. Il cavallo al tiro si allontana. Nessuna colpa.','Egli possiede la verità che li unisce. Nessuna colpa.','Il grido del gallo sale fino al cielo. La perseveranza porta sventura.'],
+'La verità interiore risuona senza parole. Chi è autentico nel profondo muove anche le pietre del cuore.');
+
+h(62,'小過','La Preponderanza del Piccolo','Preponderance of the Small',12,
+'La Preponderanza del Piccolo. Successo. La perseveranza porta vantaggio. Si può fare piccole cose, non grandi cose. L\'uccello volante porta il messaggio: non è bene ascendere, è bene discendere. Grande fortuna.',
+'Sopra la montagna v\'è il tuono: immagine della Preponderanza del Piccolo. Così l\'uomo superiore nelle sue azioni supera un poco in rispetto, nel suo lutto supera un poco in dolore, nel suo spendere supera un poco in frugalità.',
+'Il tuono sopra la montagna: non il grande volo ma il piccolo uccello che sa dove posarsi. Il momento richiede umiltà, piccoli passi, attenzione ai dettagli. Non il grande gesto ma la cura quotidiana.',
+['L\'uccello vola troppo in alto. Sventura.','Supera il suo antenato e incontra sua antenata. Non raggiunge il suo principe e incontra il ministro. Nessuna colpa.','Se non si prende precauzione contro di essa, qualcuno potrebbe venire da dietro e colpirlo. Sventura.','Nessuna colpa. Non passare davanti a lui, ma incontrarlo. Andare porta pericolo; si deve esser in guardia. Non usarlo; sii perseverante per sempre.','Dense nuvole, nessuna pioggia dalla nostra campagna occidentale. Il principe spara e prende colui che è nella grotta.','Non incontrarlo, lo supera. L\'uccello volante se ne va. Sventura. Questo si chiama calamità e difetto.'],
+'La preponderanza del piccolo insegna la saggezza dei piccoli passi. Il piccolo uccello che sa dove posarsi trova il ramo giusto.');
+
+h(63,'既濟','Dopo il Compimento','After Completion',22,
+'Dopo il Compimento. Successo nelle piccole cose. La perseveranza porta vantaggio. All\'inizio fortuna, alla fine disordine.',
+'L\'acqua è sopra il fuoco: immagine di Dopo il Compimento. Così l\'uomo superiore riflette sul dolore che ancora può venire e prende le precauzioni contro di esso.',
+'L\'acqua sopra il fuoco: tutto è al suo posto, ogni cosa in ordine perfetto. Ma proprio per questo il pericolo si nasconde: il fuoco può spegnersi, l\'acqua può evaporare. Il compimento porta il seme del nuovo inizio — e del nuovo declino.',
+['Egli frena le sue ruote. Egli bagna la sua coda. Nessuna colpa.','La donna perde il tendaggio del suo carro. Non corrergli dietro. Al settimo giorno lo si otterrà.','L\'Illustre Antenato castiga il paese demoniaco. Dopo tre anni lo conquista. Gli uomini inferiori non devono essere usati.','Le vesti di seta a brandelli; si è tutto il giorno in guardia.','Il vicino orientale uccide un bue; questo non è buono come il piccolo sacrificio del vicino occidentale, che in realtà riceve la benedizione.','Si bagna la sua testa. Pericolo.'],
+'Dopo il compimento, la vigilanza. Chi sa che l\'ordine perfetto porta in sé il germe del disordine mantiene la fortuna.');
+
+h(64,'未濟','Prima del Compimento','Before Completion',50,
+'Prima del Compimento. Successo. Ma se il piccolo volpino, dopo aver quasi attraversato l\'acqua, bagna la sua coda, non v\'è nulla di vantaggioso.',
+'Il fuoco è sopra l\'acqua: immagine di Prima del Compimento. Così l\'uomo superiore giudiziosamente discrimina tra le cose al fine di trovare a ciascuna il suo posto.',
+'Il fuoco è sopra, l\'acqua è sotto: ancora separati, non ancora in ordine. L\'ultimo esagramma, paradossalmente, è quello del non-ancora-compimento. La piccola volpe quasi ce la fa ma bagna la coda: manca solo la cautela finale. Ogni compimento porta un nuovo inizio.',
+['Egli bagna la sua coda. Umiliazione.','Egli frena le sue ruote. Perseveranza porta fortuna.','Prima del compimento, avanzare porta sventura. È vantaggioso attraversare le grandi acque.','Perseveranza porta fortuna. Il rimpianto scompare. Scuotimento, per attaccare il paese del diavolo. Per tre anni, grandi regni vengono ricompensati.','Perseveranza porta fortuna. Nessun rimpianto. Lo splendore dell\'uomo superiore è veritiero. Fortuna.','C\'è bere di vino in piena fiducia. Nessuna colpa. Ma se si bagna la testa, la si perde in verità.'],
+'Prima del compimento è la soglia di ogni possibilità. L\'ultimo passo richiede la stessa cura del primo: il viaggio non finisce mai.');
+
+// ============================================================
+// HEXAGRAM LOOKUP
+// Build lookup by binary value
+// ============================================================
+
+// King Wen order binary values (lsb=line1, 1=yang, 0=yin)
+// Verify we have all 64
+const hexCount = Object.keys(HEX).length;
+console.log('Hexagrams loaded:', hexCount);
+
+// Get trigram (bottom or top)
+function getTrigram(bin, which) {
+  // which: 'bottom'=bits 0-2, 'top'=bits 3-5
+  return which === 'bottom' ? (bin & 7) : ((bin >> 3) & 7);
+}
+
+// Get unicode hexagram character
+function getHexUnicode(bin) {
+  // Unicode hexagrams start at U+4DC0
+  // We need to map binary to King Wen number then to unicode offset
+  const hex = HEX[bin];
+  if (!hex) return '?';
+  // U+4DC0 is hexagram 1, but order is different
+  // The unicode block I Ching hexagrams at U+4DC0-U+4DFF
+  // offset = num - 1 for King Wen order
+  return String.fromCodePoint(0x4DC0 + hex.num - 1);
+}
+
+// Draw SVG hexagram
+function drawHexSVG(lines, size=64) {
+  // lines: array of 6 values (bottom to top), each 6,7,8,9
+  const w = size, lw = size * 0.85, gap = size * 0.18;
+  const lh = 4, lspace = (size - lh * 6) / 7;
+  let svg = `<svg class="hexsvg" width="${w}" height="${size}" viewBox="0 0 ${w} ${size}">`;
+  for (let i = 0; i < 6; i++) {
+    const v = lines[i];
+    const y = size - lspace * (i + 1) - lh * i - lh;
+    const isYang = (v === 7 || v === 9);
+    const isMobile = (v === 6 || v === 9);
+    const col = isMobile ? '#b8860b' : '#1a1410';
+    const x0 = (w - lw) / 2;
+    if (isYang) {
+      svg += `<line x1="${x0}" y1="${y + lh/2}" x2="${x0 + lw}" y2="${y + lh/2}" stroke="${col}" stroke-width="${lh}" stroke-linecap="round"/>`;
+      if (isMobile) {
+        svg += `<circle cx="${x0 + lw/2}" cy="${y + lh/2}" r="3" fill="${col}"/>`;
+      }
+    } else {
+      const segW = lw * 0.42;
+      svg += `<line x1="${x0}" y1="${y + lh/2}" x2="${x0 + segW}" y2="${y + lh/2}" stroke="${col}" stroke-width="${lh}" stroke-linecap="round"/>`;
+      svg += `<line x1="${x0 + lw - segW}" y1="${y + lh/2}" x2="${x0 + lw}" y2="${y + lh/2}" stroke="${col}" stroke-width="${lh}" stroke-linecap="round"/>`;
+      if (isMobile) {
+        svg += `<circle cx="${x0 + segW + (lw - 2*segW)/2}" cy="${y + lh/2}" r="3" fill="${col}"/>`;
+      }
+    }
+  }
+  svg += '</svg>';
+  return svg;
+}
+
+// Convert line values to binary
+function linesToBin(lines) {
+  // lines: [v1,v2,...,v6] (bottom to top), values 6,7,8,9
+  // yang=7or9 → bit=1, yin=6or8 → bit=0
+  let bin = 0;
+  for (let i = 0; i < 6; i++) {
+    const v = lines[i];
+    if (v === 7 || v === 9) bin |= (1 << i);
+  }
+  return bin;
+}
+
+// Get mutated hexagram binary (flip mobile lines)
+function getMutated(lines) {
+  const mut = [...lines];
+  for (let i = 0; i < 6; i++) {
+    if (mut[i] === 9) mut[i] = 8; // yang mobile → yin stable
+    else if (mut[i] === 6) mut[i] = 7; // yin mobile → yang stable
+  }
+  return mut;
+}
+
+// ============================================================
+// APP STATE
+// ============================================================
+let mode = null;
+let method = 'coins';
+let manualLines = []; // values for each line (bottom to top)
+let autoLines = [];
+let autoStep = 0;
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-m').classList.toggle('active', m === 'manual');
+  document.getElementById('btn-a').classList.toggle('active', m === 'auto');
+  document.getElementById('manual-panel').style.display = m === 'manual' ? 'block' : 'none';
+  document.getElementById('auto-panel').style.display = m === 'auto' ? 'block' : 'none';
+  document.getElementById('result-panel').style.display = 'none';
+  if (m === 'manual') initManual();
+  if (m === 'auto') { autoLines = []; autoStep = 0; document.getElementById('tanim').innerHTML = ''; }
+}
+
+function setMethod(m) {
+  method = m;
+  document.getElementById('tab-c').classList.toggle('active', m === 'coins');
+  document.getElementById('tab-y').classList.toggle('active', m === 'yarrow');
+  const descs = {
+    coins: 'Tre monete per linea (King Wen): ogni moneta vale 2 (yang/testa) o 3 (yin/croce). Somma per linea: 6=Yin mobile, 7=Yang stabile, 8=Yin stabile, 9=Yang mobile.',
+    yarrow: 'Steli di achillea (metodo tradizionale): distribuzione di 49 steli in gruppi. Le probabilità sono: Yin mobile (6) = 1/16, Yang stabile (7) = 5/16, Yin stabile (8) = 7/16, Yang mobile (9) = 3/16.'
+  };
+  document.getElementById('mdesc').textContent = descs[m];
+  autoLines = []; autoStep = 0;
+  document.getElementById('tanim').innerHTML = '';
+}
+
+function initManual() {
+  manualLines = [];
+  updateManualUI();
+}
+
+function updateManualUI() {
+  const container = document.getElementById('manual-lines');
+  container.innerHTML = '';
+  const lineNames = ['1ª linea (in basso)','2ª linea','3ª linea','4ª linea','5ª linea','6ª linea (in cima)'];
+  for (let i = 0; i < 6; i++) {
+    const row = document.createElement('div');
+    row.className = 'line-row';
+    const val = manualLines[i];
+    const preview = linePreview(val, i);
+    row.innerHTML = `
+      <span class="line-lbl">${lineNames[i]}</span>
+      <div class="lbtns">
+        <button class="lbtn ${val===6?'s6':''}" onclick="setLine(${i},6)" title="6 – Yin mobile">6</button>
+        <button class="lbtn ${val===7?'s7':''}" onclick="setLine(${i},7)" title="7 – Yang stabile">7</button>
+        <button class="lbtn ${val===8?'s8':''}" onclick="setLine(${i},8)" title="8 – Yin stabile">8</button>
+        <button class="lbtn ${val===9?'s9':''}" onclick="setLine(${i},9)" title="9 – Yang mobile">9</button>
+      </div>
+      <span class="lprev">${preview}</span>
+    `;
+    container.appendChild(row);
+  }
+  const count = manualLines.filter(v => v !== undefined).length;
+  document.getElementById('lcount').textContent = count;
+  document.getElementById('btn-compute').disabled = count < 6;
+}
+
+function linePreview(val, idx) {
+  if (val === undefined) return '';
+  const colors = {6:'#4a7c9e',7:'#1a1410',8:'#9e6b4a',9:'#b8860b'};
+  const col = colors[val] || '#999';
+  const isYang = val === 7 || val === 9;
+  const isMobile = val === 6 || val === 9;
+  const mark = isMobile ? ' ×' : '';
+  return `<svg width="32" height="16" viewBox="0 0 32 16">
+    ${isYang
+      ? `<line x1="2" y1="8" x2="30" y2="8" stroke="${col}" stroke-width="4" stroke-linecap="round"/>
+         ${isMobile ? `<circle cx="16" cy="8" r="3.5" fill="#b8860b"/>` : ''}`
+      : `<line x1="2" y1="8" x2="12" y2="8" stroke="${col}" stroke-width="4" stroke-linecap="round"/>
+         <line x1="20" y1="8" x2="30" y2="8" stroke="${col}" stroke-width="4" stroke-linecap="round"/>
+         ${isMobile ? `<circle cx="16" cy="8" r="3.5" fill="#b8860b"/>` : ''}`
+    }
+  </svg>`;
+}
+
+function setLine(i, v) {
+  manualLines[i] = v;
+  updateManualUI();
+}
+
+function resetManual() {
+  manualLines = [];
+  updateManualUI();
+  document.getElementById('result-panel').style.display = 'none';
+}
+
+// ============================================================
+// RANDOM GENERATION
+// ============================================================
+function throwCoins() {
+  // 3 coins, each 2(yang) or 3(yin)
+  const coins = [Math.random()<0.5?2:3, Math.random()<0.5?2:3, Math.random()<0.5?2:3];
+  return coins.reduce((a,b)=>a+b, 0); // 6,7,8,9
+}
+
+function throwYarrow() {
+  // Yarrow stalks probabilities: 6=1/16, 7=5/16, 8=7/16, 9=3/16
+  const r = Math.random() * 16;
+  if (r < 1) return 6;
+  if (r < 6) return 7;
+  if (r < 13) return 8;
+  return 9;
+}
+
+function genLine() {
+  return method === 'coins' ? throwCoins() : throwYarrow();
+}
+
+function throwAll() {
+  autoLines = [];
+  autoStep = 0;
+  const tanim = document.getElementById('tanim');
+  tanim.innerHTML = '';
+  for (let i = 0; i < 6; i++) {
+    const v = genLine();
+    autoLines.push(v);
+    // Show animation element
+    const el = document.createElement('div');
+    el.className = 'step-line';
+    const lnames = ['1ª','2ª','3ª','4ª','5ª','6ª'];
+    const lnames2 = {6:'Yin mobile',7:'Yang stabile',8:'Yin stabile',9:'Yang mobile'};
+    el.innerHTML = `<span class="step-num">${lnames[i]} linea</span>${linePreview(v,i)}<span style="font-size:13px;color:var(--muted);margin-left:6px">${v} — ${lnames2[v]}</span>`;
+    tanim.appendChild(el);
+  }
+  autoStep = 6;
+  setTimeout(()=>showResult(autoLines), 600);
+}
+
+function throwNextLine() {
+  if (autoStep >= 6) {
+    autoLines = [];
+    autoStep = 0;
+    document.getElementById('tanim').innerHTML = '';
+    return;
+  }
+  const v = genLine();
+  autoLines.push(v);
+  const tanim = document.getElementById('tanim');
+  const lnames = ['1ª','2ª','3ª','4ª','5ª','6ª'];
+  const lnames2 = {6:'Yin mobile',7:'Yang stabile',8:'Yin stabile',9:'Yang mobile'};
+  const el = document.createElement('div');
+  el.className = 'step-line';
+  if (method === 'coins') {
+    // Show coins
+    const c = [];
+    let sum = v; // we need to reverse-engineer coins or just show result
+    el.innerHTML = `<span class="step-num">${lnames[autoStep]} linea</span>${linePreview(v,autoStep)}<span style="font-size:13px;color:var(--muted);margin-left:6px">${v} — ${lnames2[v]}</span>`;
+  } else {
+    el.innerHTML = `<span class="step-num">${lnames[autoStep]} linea</span>${linePreview(v,autoStep)}<span style="font-size:13px;color:var(--muted);margin-left:6px">${v} — ${lnames2[v]}</span>`;
+  }
+  tanim.appendChild(el);
+  autoStep++;
+  if (autoStep === 6) {
+    setTimeout(() => showResult(autoLines), 400);
+  }
+}
+
+function computeHex() {
+  showResult(manualLines.slice(0,6));
+}
+
+// ============================================================
+// DISPLAY
+// ============================================================
+function showResult(lines) {
+  const bin = linesToBin(lines);
+  const hex = HEX[bin];
+  if (!hex) {
+    alert('Errore: esagramma non trovato per ' + bin.toString(2));
+    return;
+  }
+
+  const movingIndices = [];
+  for (let i = 0; i < 6; i++) {
+    if (lines[i] === 6 || lines[i] === 9) movingIndices.push(i);
+  }
+
+  document.getElementById('res-primary').innerHTML = renderHexCard(hex, lines, true);
+  
+  let movingHTML = '';
+  if (movingIndices.length > 0) {
+    movingHTML = `<div class="hcard">`;
+    movingHTML += `<div class="tlbl" style="margin-bottom:14px">Linee mobili — trasformazione in atto</div>`;
+    movingHTML += `<div class="ml-sect">`;
+    const posNames = ['Prima','Seconda','Terza','Quarta','Quinta','Sesta'];
+    const posNamesLower = ['prima','seconda','terza','quarta','quinta','sesta'];
+    movingIndices.forEach(i => {
+      const lineText = hex.ml[i] || '';
+      const lineType = lines[i] === 9 ? 'Yang mobile (9)' : 'Yin mobile (6)';
+      movingHTML += `<div class="ml-item">
+        <div class="ml-num">${posNames[i]} linea — ${lineType}</div>
+        <div class="ml-text">${lineText}</div>
+      </div>`;
+    });
+    movingHTML += `</div></div>`;
+  }
+  document.getElementById('res-moving').innerHTML = movingHTML;
+
+  let secHTML = '';
+  if (movingIndices.length > 0) {
+    const mutLines = getMutated(lines);
+    const mutBin = linesToBin(mutLines);
+    const mutHex = HEX[mutBin];
+    if (mutHex) {
+      secHTML = `<div class="mut-arrow">↓</div>
+      <div class="mut-label">Esagramma mutato</div>`;
+      secHTML += renderHexCard(mutHex, mutLines, false);
+    }
+  }
+  document.getElementById('res-secondary').innerHTML = secHTML;
+
+  document.getElementById('result-panel').style.display = 'block';
+  document.getElementById('result-panel').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderHexCard(hex, lines, primary) {
+  const btrig = getTrigram(hex.bin, 'bottom');
+  const ttrig = getTrigram(hex.bin, 'top');
+  const btrigInfo = TG[btrig] || {zh:'?',it:'?',sym:'?'};
+  const ttrigInfo = TG[ttrig] || {zh:'?',it:'?',sym:'?'};
+
+  const svgLines = drawHexSVG(lines, 72);
+  const uniChar = getHexUnicode(hex.bin);
+
+  let html = `<div class="hcard">`;
+  html += `<div class="hhead">
+    <div class="hvisual">
+      ${svgLines}
+      <span class="huni" title="Unicode I Ching">${uniChar}</span>
+    </div>
+    <div class="hinfo">
+      <div class="hnum">Esagramma ${hex.num}</div>
+      <div class="hzh">${hex.zh}</div>
+      <div class="hit">${hex.it}</div>
+      <div class="hen">${hex.en}</div>
+      <div class="htrig">
+        ${ttrigInfo.sym} ${ttrigInfo.it} (sopra) &nbsp;·&nbsp; ${btrigInfo.sym} ${btrigInfo.it} (sotto)
+      </div>
+    </div>
+  </div>`;
+
+  if (hex.tuan) {
+    html += `<div class="tsect">
+      <div class="tlbl">Tuan — Il Verdetto</div>
+      <p class="tuan">${hex.tuan}</p>
+    </div>`;
+  }
+
+  html += `<div class="tsect">
+    <div class="tlbl">Il Giudizio (Das Urteil)</div>
+    <p>${hex.j}</p>
+  </div>`;
+
+  html += `<div class="tsect">
+    <div class="tlbl">L'Immagine (Das Bild)</div>
+    <p>${hex.img}</p>
+  </div>`;
+
+  html += `<div class="tsect">
+    <div class="tlbl">Commentario</div>
+    <p class="comm">${hex.comm}</p>
+  </div>`;
+
+  html += `</div>`;
+  return html;
+}
+
+function resetAll() {
+  mode = null;
+  manualLines = [];
+  autoLines = [];
+  autoStep = 0;
+  document.getElementById('btn-m').classList.remove('active');
+  document.getElementById('btn-a').classList.remove('active');
+  document.getElementById('manual-panel').style.display = 'none';
+  document.getElementById('auto-panel').style.display = 'none';
+  document.getElementById('result-panel').style.display = 'none';
+  document.getElementById('tanim').innerHTML = '';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+
+<!-- OFFLINE BADGE -->
+<div id="offline-badge">● OFFLINE</div>
+
+<!-- INSTALL BANNER -->
+<div id="install-banner">
+  <span class="ib-icon">易</span>
+  <div class="ib-text">
+    Installa l'app sul tuo dispositivo
+    <small>Funziona anche senza connessione</small>
+  </div>
+  <button class="ib-btn" id="ib-install">Installa</button>
+  <button class="ib-close" id="ib-close">✕</button>
+</div>
+
+<script>
+// ============================================================
+// PWA: MANIFEST (inline, no server needed)
+// ============================================================
+(function() {
+  // SVG icon for the app
+  const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <rect width="512" height="512" fill="#f5f0e8"/>
+    <rect x="30" y="30" width="452" height="452" fill="none" stroke="#c4b89a" stroke-width="8"/>
+    <!-- 6 hexagram lines (alternating yang/yin) -->
+    <line x1="96" y1="410" x2="416" y2="410" stroke="#1a1410" stroke-width="22" stroke-linecap="round"/>
+    <line x1="96" y1="358" x2="230" y2="358" stroke="#1a1410" stroke-width="22" stroke-linecap="round"/>
+    <line x1="282" y1="358" x2="416" y2="358" stroke="#1a1410" stroke-width="22" stroke-linecap="round"/>
+    <line x1="96" y1="306" x2="416" y2="306" stroke="#1a1410" stroke-width="22" stroke-linecap="round"/>
+    <line x1="96" y1="254" x2="230" y2="254" stroke="#b8860b" stroke-width="22" stroke-linecap="round"/>
+    <line x1="282" y1="254" x2="416" y2="254" stroke="#b8860b" stroke-width="22" stroke-linecap="round"/>
+    <line x1="96" y1="202" x2="416" y2="202" stroke="#1a1410" stroke-width="22" stroke-linecap="round"/>
+    <!-- Chinese character 易 -->
+    <text x="256" y="158" font-family="serif" font-size="110" fill="#b8860b" text-anchor="middle" dominant-baseline="middle">易</text>
+  </svg>`;
+
+  const svgBlob = new Blob([svgIcon], {type: 'image/svg+xml'});
+  const svgUrl = URL.createObjectURL(svgBlob);
+
+  // Set apple touch icon
+  document.getElementById('apple-icon').href = svgUrl;
+
+  // Build manifest object
+  const manifest = {
+    name: 'I Ching — 易經 Oracolo',
+    short_name: '易經',
+    description: 'Oracolo I Ching secondo la traduzione di Richard Wilhelm',
+    start_url: './',
+    display: 'standalone',
+    orientation: 'portrait',
+    background_color: '#f5f0e8',
+    theme_color: '#f5f0e8',
+    lang: 'it',
+    icons: [
+      { src: svgUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
+      { src: svgUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }
+    ],
+    categories: ['lifestyle', 'utilities'],
+    screenshots: []
+  };
+
+  const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
+  const manifestUrl = URL.createObjectURL(manifestBlob);
+  document.getElementById('pwa-manifest').href = manifestUrl;
+})();
+
+// ============================================================
+// PWA: SERVICE WORKER (inline via Blob URL)
+// ============================================================
+(function() {
+  const CACHE = 'iching-v1';
+
+  const swCode = `
+const CACHE_NAME = '${window.location.pathname}-iching-v1';
+const FONTS = [
+  'https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+SC:wght@300;400&display=swap'
+];
+
+self.addEventListener('install', e => {
+  self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(FONTS).catch(() => {});
+    })
+  );
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', e => {
+  // Cache-first for fonts, network-first for everything else
+  if (e.request.url.includes('fonts.')) {
+    e.respondWith(
+      caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+        return res;
+      }))
+    );
+    return;
+  }
+  // For the main page: cache it on first load
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+});
+`;
+
+  if ('serviceWorker' in navigator) {
+    const swBlob = new Blob([swCode], {type: 'application/javascript'});
+    const swUrl = URL.createObjectURL(swBlob);
+
+    navigator.serviceWorker.register(swUrl, {scope: './'})
+      .then(reg => {
+        console.log('I Ching SW registrato:', reg.scope);
+      })
+      .catch(err => {
+        // Blob SW may fail on some browsers — that's OK, app still works
+        console.log('SW non disponibile (file locale):', err.message);
+      });
+  }
+})();
+
+// ============================================================
+// PWA: INSTALL PROMPT
+// ============================================================
+(function() {
+  let deferredPrompt = null;
+  const banner = document.getElementById('install-banner');
+  const btnInstall = document.getElementById('ib-install');
+  const btnClose = document.getElementById('ib-close');
+
+  // Show banner when browser fires beforeinstallprompt
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    // Show after a small delay
+    setTimeout(() => banner.classList.add('show'), 2000);
+  });
+
+  btnInstall.addEventListener('click', () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      deferredPrompt = null;
+      banner.classList.remove('show');
+    });
+  });
+
+  btnClose.addEventListener('click', () => {
+    banner.classList.remove('show');
+    // Don't show again for this session
+    deferredPrompt = null;
+  });
+
+  // Hide if already installed (standalone mode)
+  if (window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true) {
+    banner.style.display = 'none';
+  }
+
+  // App installed event
+  window.addEventListener('appinstalled', () => {
+    banner.classList.remove('show');
+    console.log('I Ching PWA installata!');
+  });
+})();
+
+// ============================================================
+// OFFLINE DETECTION
+// ============================================================
+(function() {
+  function updateOnlineStatus() {
+    document.body.classList.toggle('offline', !navigator.onLine);
+  }
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  updateOnlineStatus();
+})();
+
+// ============================================================
+// MOBILE UX: prevent double-tap zoom on buttons
+// ============================================================
+document.addEventListener('touchend', function(e) {
+  if (e.target.classList.contains('btn') ||
+      e.target.classList.contains('lbtn') ||
+      e.target.classList.contains('tab')) {
+    e.preventDefault();
+    e.target.click();
+  }
+}, {passive: false});
+</script>
+</body>
+</html>
