@@ -147,6 +147,34 @@ svg.hexsvg line{stroke:var(--ink);stroke-width:3;stroke-linecap:round;}
 .ml-modern{font-size:14.5px;line-height:1.68;font-style:italic;color:#5a5040;
   background:rgba(184,134,11,.04);padding:8px 12px;margin-top:8px;
   border-left:2px solid var(--accent);}
+/* ===== DIRECT LOOKUP ===== */
+.lookup-grid{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:4px;
+  margin-bottom:20px;
+}
+.hx-btn{
+  border:1px solid var(--border);background:transparent;
+  font-family:'EB Garamond',serif;font-size:12px;
+  cursor:pointer;padding:7px 2px;text-align:center;
+  color:var(--ink);transition:all .15s;line-height:1.2;
+  -webkit-tap-highlight-color:transparent;
+}
+.hx-btn:hover,.hx-btn.sel{background:var(--gold);color:#fff;border-color:var(--gold);}
+.hx-btn .hx-num{font-size:9px;color:var(--muted);display:block;}
+.hx-btn.sel .hx-num{color:rgba(255,255,255,.7);}
+.hx-btn .hx-uni{font-size:17px;display:block;line-height:1.1;}
+.lookup-bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+.lookup-input{
+  width:70px;border:1px solid var(--border);background:rgba(255,255,255,.5);
+  font-family:'EB Garamond',serif;font-size:18px;text-align:center;
+  padding:8px 6px;color:var(--ink);outline:none;
+}
+.lookup-input:focus{border-color:var(--gold);}
+@media(max-width:480px){
+  .lookup-grid{gap:3px;}
+  .hx-btn{font-size:10px;padding:5px 1px;}
+  .hx-btn .hx-uni{font-size:14px;}
+}
 /* ===== MOBILE / PWA ENHANCEMENTS ===== */
 /* Safe area insets for notched phones */
 .wrap{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right));padding-bottom:max(80px,calc(env(safe-area-inset-bottom) + 60px));}
@@ -254,6 +282,18 @@ body.offline #offline-badge{display:block;}
   <div class="throw-anim" id="tanim"></div>
   <button class="btn btn-primary" id="btn-throw" onclick="throwAll()">Lancia tutte le linee</button>
   <button class="btn btn-sm" style="margin-left:10px" id="btn-step" onclick="throwNextLine()">Lancia linea per linea</button>
+</div>
+
+<!-- DIRECT LOOKUP PANEL -->
+<div style="border-top:1px solid var(--border);margin-top:10px;padding-top:24px;">
+<div class="sec-label">Consultazione diretta per numero</div>
+<div class="lookup-bar">
+  <input class="lookup-input" type="number" id="lookup-num" min="1" max="64" placeholder="№"
+    oninput="lookupByInput(this.value)">
+  <button class="btn" onclick="lookupByInput(document.getElementById('lookup-num').value)">Vai</button>
+  <span style="font-size:13px;color:var(--muted);font-style:italic">oppure clicca sull'esagramma</span>
+</div>
+<div class="lookup-grid" id="lookup-grid"></div>
 </div>
 
 <!-- RESULT PANEL -->
@@ -1008,6 +1048,10 @@ function resetAll() {
   manualLines = [];
   autoLines = [];
   autoStep = 0;
+  currentLines = null;
+  currentLookupNum = null;
+  document.querySelectorAll('.hx-btn').forEach(b => b.classList.remove('sel'));
+  document.getElementById('lookup-num').value = '';
   document.getElementById('btn-m').classList.remove('active');
   document.getElementById('btn-a').classList.remove('active');
   document.getElementById('manual-panel').style.display = 'none';
@@ -1049,8 +1093,12 @@ function setTrans(t) {
     both:    'Confronto: Wilhelm (ed. Astrolabio) + Daniele Ferrero (2008)'
   };
   document.getElementById('trans-source').innerHTML = src[t];
-  if (currentLines && document.getElementById('result-panel').style.display !== 'none') {
-    showResult(currentLines);
+  if (document.getElementById('result-panel').style.display !== 'none') {
+    if (currentLines) {
+      showResult(currentLines);
+    } else if (currentLookupNum) {
+      lookupHex(currentLookupNum);
+    }
   }
 }
 
@@ -1342,8 +1390,85 @@ F[63]={n:63,name:`Dopo il compimento`,kw:`Già compiuto`,s:`Dopo il compimento. 
 F[64]={n:64,name:`Prima del compimento`,kw:`Non ancora compiuto`,s:`Prima del compimento. Riuscita. La piccola volpe, quando ha quasi compiuto la traversata, si bagna la coda. Nulla è propizio.`,c:`Prima del compimento. «Riuscita»: perché la linea morbida ottiene il centro [quinta linea]. «La piccola volpe ha quasi compiuto la traversata», ma non ha ancora superato il centro [del problema]. «Si bagna la coda. Nulla è propizio», poiché la cosa non continua fino alla fine. Sebbene nessuna linea sia nella posizione adatta, le linee dure e morbide si corrispondono [nei due trigrammi].`,img:`Il Fuoco sopra l'Acqua: questa è l'immagine delle cose Prima del compimento. Ispirandosi ad essa, il signore con cautela distingue le cose e mette ciascuna di esse al suo posto.`,lo:[`Bagnarsi la coda. Umiliazione.`,`Frenare le proprie ruote. Oracolo fausto.`,`Prima del compimento. Per un'impresa: disastroso. Propizio attraversare il grande fiume.`,`Oracolo fausto. Il rimpianto svanisce. Attaccare come tuono il Paese dei Diavoli; dopo tre anni, si è premiati nel Grande Paese.`,`Oracolo fausto. Nessun rimpianto. Lo splendore del signore. Essere sinceri. Fausto.`,`Essere sinceri mentre si beve vino. Nessuna sfortuna. Bagnarsi la testa. Si è sinceri, ma questo lo si perde.`,``],lm:[`Una coda bagnata: Il ghiaccio, nel mezzo del fiume, si spacca sotto le zampe della piccola volpe. Evitate di farvi coinvolgere in qualcosa finché non saprete di poterla portare a termine. Siate consci dei vostri limiti.`,`Frenare le ruote: Frenate, vi aspettano sorprese. Farete bene a procedere con lentezza ed estrema cautela. Prendete precauzioni contro possibili incidenti.`,`Quando siete pronti: attraversate il fiume Siete pronti a procedere, ma avete bisogno di aiuto per superare gli ostacoli sul vostro cammino. Ciò potrebbe significare tirarvi indietro e ricominciare daccapo per riuscire nell'intento.`,`Domate la terra selvaggia dopo: tre anni Un'impresa che dura tre anni richiede dedizione e forte volontà per lavorare a ciò in cui si crede. Agite con coraggio, forza e determinazione e verrete ricompensati.`,`Pagate il prossimo giro: Siate generosi e condividete la vostra buona sorte. Se vincete alla lotteria, il minimo che potete fare è pagare da bere a tutti.`,`Ubriachi al punto da bagnarvi: la testa Non c'è nulla di male nel bere, ma non eccedete. Avete un'esagerata opinione di voi stessi. Il successo vi ha dato alla testa?`,``]};
 
 // ============================================================
-// PWA: MANIFEST (inline, no server needed)
+// DIRECT LOOKUP BY NUMBER
 // ============================================================
+
+// Build the 8x8 grid of hexagram buttons
+function buildLookupGrid() {
+  const grid = document.getElementById('lookup-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  // We need hex num → bin mapping: scan HEX object
+  const numToBin = {};
+  for (const bin in HEX) {
+    numToBin[HEX[bin].num] = parseInt(bin);
+  }
+  for (let n = 1; n <= 64; n++) {
+    const bin = numToBin[n];
+    const hex = HEX[bin];
+    const uni = hex ? getHexUnicode(bin) : '?';
+    const btn = document.createElement('button');
+    btn.className = 'hx-btn';
+    btn.id = 'hxb-' + n;
+    btn.innerHTML = `<span class="hx-uni">${uni}</span><span class="hx-num">${n}</span>`;
+    btn.onclick = () => lookupHex(n);
+    grid.appendChild(btn);
+  }
+}
+
+function lookupByInput(val) {
+  const n = parseInt(val);
+  if (n >= 1 && n <= 64) lookupHex(n);
+}
+
+function lookupHex(num) {
+  // Highlight selected button
+  document.querySelectorAll('.hx-btn').forEach(b => b.classList.remove('sel'));
+  const btn = document.getElementById('hxb-' + num);
+  if (btn) btn.classList.add('sel');
+  document.getElementById('lookup-num').value = num;
+
+  // Find hex by number
+  let targetHex = null, targetBin = null;
+  for (const bin in HEX) {
+    if (HEX[bin].num === num) { targetHex = HEX[bin]; targetBin = parseInt(bin); break; }
+  }
+  if (!targetHex) return;
+
+  // Build all-yang lines (no moving lines = pure display)
+  // Use yang stable (7) for all lines so SVG draws correctly
+  const lines = [7,7,7,7,7,7];
+  // Actually use the hexagram's actual line pattern from bin
+  const binLines = [];
+  for (let i = 0; i < 6; i++) {
+    binLines.push(((targetBin >> i) & 1) ? 7 : 8); // 7=yang stable, 8=yin stable
+  }
+
+  currentLines = null; // no re-render on trans switch for lookup
+  currentLookupNum = num;
+
+  // Render card
+  document.getElementById('res-primary').innerHTML = renderHexCard(targetHex, binLines);
+  document.getElementById('res-moving').innerHTML = `
+    <div style="text-align:center;padding:16px 0;color:var(--muted);font-style:italic;font-size:14px;letter-spacing:1px">
+      — Consultazione diretta: nessuna linea mobile —<br>
+      <span style="font-size:12px">Per il responso oracolare usa la modalità di consultazione sopra</span>
+    </div>`;
+  document.getElementById('res-secondary').innerHTML = '';
+  document.getElementById('result-panel').style.display = 'block';
+  document.getElementById('result-panel').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+let currentLookupNum = null;
+
+// Override setTrans to also re-render lookup if active
+const _origSetTrans = setTrans;
+// (setTrans already defined above, we patch it to handle lookup)
+
+// Initialize grid after page loads
+window.addEventListener('load', buildLookupGrid);
+
+
 (function() {
   // SVG icon for the app
   const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
